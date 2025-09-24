@@ -59,6 +59,58 @@
             </FrameLayout>
         </com.google.android.material.card.MaterialCardView>
 
+        <LinearLayout
+            android:id="@+id/trackDetailsContainer"
+            android:layout_width="220dp"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            app:layout_constraintStart_toEndOf="@+id/playContainer"
+            android:layout_marginRight="10dp"
+            android:layout_marginLeft="10dp"
+            android:gravity="center">
+
+            <TextView
+                android:id="@+id/tvTrackTitleNowPlaying"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="#FFF"
+                android:textSize="20sp"
+                android:fontFamily="sans-serif"
+                android:maxLines="1"
+                android:ellipsize="end"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/tvTrackSourceNowPlaying"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="#EEEEEE"
+                android:textSize="18sp"
+                android:fontFamily="sans-serif"
+                android:maxLines="1"
+                android:ellipsize="end" />
+
+        </LinearLayout>
+
+        <ImageButton
+            android:id="@+id/btnFollowNowPlaying"
+            android:layout_width="44dp"
+            android:layout_height="match_parent"
+            app:layout_constraintStart_toEndOf="@+id/trackDetailsContainer"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
+            android:src="@drawable/ic_follow"
+            android:background="transparent"/>
+
+        <ImageButton
+            android:id="@+id/btnLikeNowPlaying"
+            android:layout_width="44dp"
+            android:layout_height="match_parent"
+            app:layout_constraintStart_toEndOf="@+id/btnFollowNowPlaying"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
+            android:src="@drawable/ic_like"
+            android:background="transparent"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </com.google.android.material.card.MaterialCardView>
