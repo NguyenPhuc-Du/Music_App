@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+
+<!--Left shadow-->
+    <item android:gravity="left">
+        <shape>
+            <gradient
+                android:startColor="#85000000"
+            android:endColor="@android:color/transparent"
+            android:angle="0"/>
+        </shape>
+    </item>
+
+<!--Right shadow-->
+    <item android:gravity="right">
+        <shape>
+            <gradient
+                android:startColor="#70000000"
+                android:endColor="@android:color/transparent"
+                android:angle="180"/>
+        </shape>
+    </item>
+</layer-list>

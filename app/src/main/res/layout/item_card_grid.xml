@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="135dp"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="10dp"
+    android:background="@color/black">
+
+    <ImageView
+        android:id="@+id/ivTrackCoverGrid"
+        android:layout_width="match_parent"
+        android:layout_height="115dp"
+        android:adjustViewBounds="true"
+        android:scaleType="centerCrop"/>
+    
+    <TextView
+        android:id="@+id/tvTrackTitleGrid"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="#FFF"
+        android:textSize="15sp"
+        android:fontFamily="sans-serif"
+        android:maxLines="1"
+        android:ellipsize="end"
+        android:textStyle="bold"/>
+
+    <TextView
+        android:id="@+id/tvTrackSourceGrid"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="#EEEEEE"
+        android:textSize="12sp"
+        android:fontFamily="sans-serif"
+        android:maxLines="1"
+        android:ellipsize="end"/>
+
+</LinearLayout>
