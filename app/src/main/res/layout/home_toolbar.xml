@@ -21,14 +21,14 @@
         android:fontFamily="sans-serif"
         android:textColor="@color/white"
         android:textFontWeight="1000"
-        android:textSize="20sp"
+        android:textSize="25sp"
         android:layout_marginStart="10dp"/>
 
 <!--    Search icon-->
     <ImageView
         android:id="@+id/btnHomeSearch"
-        android:layout_width="24dp"
-        android:layout_height="24dp"
+        android:layout_width="35dp"
+        android:layout_height="35dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -39,8 +39,8 @@
 <!--    Upload icon-->
     <ImageView
         android:id="@+id/btnHomeUpload"
-        android:layout_width="24dp"
-        android:layout_height="24dp"
+        android:layout_width="35dp"
+        android:layout_height="35dp"
         app:layout_constraintEnd_toStartOf="@+id/btnHomeSearch"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
