@@ -1,14 +1,141 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".ui.feed.FeedFragment">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
+    <!-- Background -->
+    <ImageView
+        android:id="@+id/ivTrackCoverBackground"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
+        android:scaleType="centerCrop"/>
 
-</FrameLayout>
+    <!-- Overlay -->
+    <FrameLayout
+        android:id="@+id/gradientOverlayFeed"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/gradient_overlay_feed"
+        android:clickable="true"
+        android:focusable="true"
+        android:visibility="visible">
+
+        <ImageView
+            android:id="@+id/ivPauseFeed"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_gravity="center"
+            android:src="@drawable/ic_pause"/>
+    </FrameLayout>
+
+    <!-- Track details bottom -->
+    <LinearLayout
+        android:id="@+id/trackDetailsFeedContainer"
+        android:layout_width="0dp"
+        android:layout_height="120dp"
+        android:orientation="vertical"
+        android:background="@drawable/gradient_overlay_track_details_feed"
+        android:layout_margin="10dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <TextView
+            android:id="@+id/tvTrackTitleFeed"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:maxLines="1"
+            android:ellipsize="end"
+            android:textSize="40sp"
+            android:textColor="#FFF"
+            android:textStyle="bold"
+            android:layout_margin="5dp"
+            android:text=""/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="65dp"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:paddingStart="8dp"
+            android:paddingEnd="8dp">
+
+            <com.google.android.material.imageview.ShapeableImageView
+                android:id="@+id/ivTrackUserAvatarFeed"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:layout_marginEnd="8dp"
+                android:scaleType="centerCrop"
+                android:src="@drawable/ic_avatar_placeholder"
+                app:shapeAppearanceOverlay="@style/avatarUser"/>
+
+            <TextView
+                android:id="@+id/tvTrackUserNameFeed"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:maxLines="1"
+                android:ellipsize="end"
+                android:textColor="@color/white"
+                android:textSize="15sp"
+                android:fontFamily="sans-serif-medium"/>
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnFollowFeed"
+                android:layout_width="wrap_content"
+                android:layout_height="50dp"
+                android:text="FOLLOW"
+                android:backgroundTint="#999"
+                android:textAllCaps="false"
+                android:textSize="15sp"
+                android:paddingHorizontal="12dp"
+                android:foreground="?attr/selectableItemBackgroundBorderless"/>
+        </LinearLayout>
+    </LinearLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/interactionContainerFeed"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        app:layout_constraintBottom_toTopOf="@+id/trackDetailsFeedContainer"
+        android:layout_margin="10dp">
+
+        <ImageButton
+            android:id="@+id/btnLikeFeed"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:src="@drawable/ic_love"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:layout_marginEnd="10dp"
+            android:layout_marginTop="10dp"/>
+        <ImageButton
+            android:id="@+id/btnCommentFeed"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/btnLikeFeed"
+            android:src="@drawable/ic_comment"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:layout_marginEnd="10dp"
+            android:layout_marginTop="20dp"/>
+
+        <ImageButton
+            android:id="@+id/btnAddFeed"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/btnCommentFeed"
+            android:src="@drawable/ic_add_playlist"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:layout_marginEnd="10dp"
+            android:layout_marginTop="20dp"/>
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
