@@ -113,7 +113,7 @@
             android:src="@drawable/ic_love"
             android:background="?attr/selectableItemBackgroundBorderless"
             android:layout_marginEnd="10dp"
-            android:layout_marginTop="10dp"/>
+            android:layout_marginTop="10dp" />
         <ImageButton
             android:id="@+id/btnCommentFeed"
             android:layout_width="40dp"

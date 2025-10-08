@@ -1,14 +1,129 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="#141414"
     tools:context=".ui.profile.EditProfileFragment">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="20dp"
+        android:gravity="center_horizontal">
 
-</FrameLayout>
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/editProfileHeader"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="20dp">
+
+            <ImageButton
+                android:id="@+id/btnBackToProfile"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                android:background="transparent"
+                android:src="@drawable/ic_back"
+                app:tint="@color/white"/>
+
+            <TextView
+                android:id="@+id/editProfileTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Edit profile"
+                app:layout_constraintStart_toEndOf="@+id/btnBackToProfile"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                android:textSize="25sp"
+                android:textColor="@color/white"
+                android:textStyle="bold"
+                android:layout_marginStart="20dp"/>
+
+            <Button
+                android:id="@+id/btnSaveProfile"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:backgroundTint="@color/white"
+                android:text="Save"
+                android:textColor="@color/black"/>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <com.google.android.material.imageview.ShapeableImageView
+            android:id="@+id/profilePicture"
+            android:layout_width="125dp"
+            android:layout_height="125dp"
+            android:src="@drawable/ic_avatar_placeholder"
+            android:scaleType="centerCrop"
+            app:shapeAppearanceOverlay="@style/avatarUser"
+            android:padding="5dp"
+            android:layout_marginBottom="10dp"/>
+
+        <TextView
+            android:id="@+id/tvChangeUserName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Display Name"
+            android:textSize="15dp"
+            android:textColor="#7C7C7C"/>
+
+        <EditText
+            android:id="@+id/edtUsername"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Display Name"
+            android:layout_marginBottom="10dp"
+            android:textColor="@color/white"
+            android:textSize="20sp"
+            android:text="Nguyen Phuc"/>
+
+
+        <TextView
+            android:id="@+id/tvChangeCity"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="City"
+            android:textSize="15dp"
+            android:textColor="#7C7C7C"/>
+
+        <EditText
+            android:id="@+id/edtCity"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Display Name"
+            android:layout_marginBottom="10dp"
+            android:textColor="@color/white"
+            android:textSize="20sp"
+            android:text="Ho Chi Minh city"/>
+
+        <TextView
+            android:id="@+id/tvChangeBio"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Bio"
+            android:textSize="15dp"
+            android:textColor="#7C7C7C"/>
+
+        <EditText
+            android:id="@+id/edtBio"
+            android:layout_width="match_parent"
+            android:layout_height="100dp"
+            android:hint="Write something about you..."
+            android:inputType="textMultiLine"
+            android:textColor="@color/white"
+            android:textSize="20sp"
+            android:gravity="top"
+            android:layout_marginBottom="10dp"
+            android:text="Em đẹp lắm!"/>
+
+    </LinearLayout>
+
+</ScrollView>

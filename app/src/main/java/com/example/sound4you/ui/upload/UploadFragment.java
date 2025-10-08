@@ -1,4 +1,4 @@
-package com.example.sound4you.ui.track;
+package com.example.sound4you.ui.upload;
 
 import android.os.Bundle;
 
@@ -12,10 +12,10 @@ import com.example.sound4you.R;
 
 /**
  * A simple {@link Fragment} subclass.
- * Use the {@link TrackListFragment#newInstance} factory method to
+ * Use the {@link UploadFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class TrackListFragment extends Fragment {
+public class UploadFragment extends Fragment {
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -26,7 +26,7 @@ public class TrackListFragment extends Fragment {
     private String mParam1;
     private String mParam2;
 
-    public TrackListFragment() {
+    public UploadFragment() {
         // Required empty public constructor
     }
 
@@ -36,11 +36,11 @@ public class TrackListFragment extends Fragment {
      *
      * @param param1 Parameter 1.
      * @param param2 Parameter 2.
-     * @return A new instance of fragment TrackListFragment.
+     * @return A new instance of fragment UploadFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static TrackListFragment newInstance(String param1, String param2) {
-        TrackListFragment fragment = new TrackListFragment();
+    public static UploadFragment newInstance(String param1, String param2) {
+        UploadFragment fragment = new UploadFragment();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
@@ -61,6 +61,6 @@ public class TrackListFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_track_list, container, false);
+        return inflater.inflate(R.layout.fragment_upload, container, false);
     }
 }
