@@ -49,4 +49,15 @@ dependencies {
     val nav_version = "2.7.7"
     implementation("androidx.navigation:navigation-fragment:$nav_version")
     implementation("androidx.navigation:navigation-ui:$nav_version")
+
+    // Retrofit
+    implementation("com.squareup.retrofit2:retrofit:2.9.0")
+// Gson converter (để tự parse JSON thành object Java)
+    implementation("com.squareup.retrofit2:converter-gson:2.9.0")
+// OkHttp (thư viện nền cho Retrofit - giúp debug network)
+    implementation("com.squareup.okhttp3:logging-interceptor:4.11.0")
+
+    implementation ("com.github.bumptech.glide:glide:4.16.0")
+    annotationProcessor ("com.github.bumptech.glide:compiler:4.16.0")
+
 }
