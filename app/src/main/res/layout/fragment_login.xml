@@ -28,7 +28,7 @@
     <com.google.android.material.card.MaterialCardView
         android:id="@+id/LoginCard"
         android:layout_width="350dp"
-        android:layout_height="450dp"
+        android:layout_height="420dp"
         app:cardBackgroundColor="@android:color/transparent"
         app:cardCornerRadius="20dp"
         app:cardUseCompatPadding="true"
@@ -76,15 +76,17 @@
                 android:id="@+id/emailForm"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="25dp"
+                android:layout_marginTop="15dp"
                 android:hint="Email:"
                 android:textColorHint="@color/white"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/loginTextView">
+                app:layout_constraintTop_toBottomOf="@id/loginTextView"
+                android:padding="10dp">
 
 
                 <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/emailInput"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content" />
 
@@ -97,12 +99,13 @@
                 android:id="@+id/passwordForm"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="25dp"
+                android:layout_marginTop="15dp"
                 android:hint="Password:"
                 android:textColorHint="@color/white"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/emailForm">
+                app:layout_constraintTop_toBottomOf="@id/emailForm"
+                android:padding="10dp">
 
 
                 <com.google.android.material.textfield.TextInputEditText
@@ -113,55 +116,63 @@
 
             </com.google.android.material.textfield.TextInputLayout>
 
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/optionsContainer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/passwordForm"
+                android:layout_marginTop="15dp">
+
+                <!--Forgot password TextView-->
+                <TextView
+                    android:id="@+id/forgotPassword"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="10dp"
+                    android:clickable="true"
+                    android:linksClickable="true"
+                    android:text="Forgot Password?"
+                    android:textSize="15sp"
+                    android:textColor="@color/white"
+                    android:textStyle="bold"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent" />
+
+
+                <!--Register TextView-->
+                <TextView
+                    android:id="@+id/registerAccount"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="10dp"
+                    android:clickable="true"
+                    android:linksClickable="true"
+                    android:text="Don't have an account?"
+                    android:textSize="15sp"
+                    android:textColor="@color/white"
+                    android:textStyle="bold"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"/>
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
             <!--Login Button-->
             <Button
                 android:id="@+id/loginButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="50dp"
+                android:layout_marginTop="20dp"
                 android:backgroundTint="#E10914"
                 android:text="Login"
                 android:textColor="@color/white"
                 android:textSize="20sp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/passwordForm" />
-
-
-            <!--Forgot password TextView-->
-            <TextView
-                android:id="@+id/forgotPassword"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="10dp"
-                android:layout_marginTop="10dp"
-                android:clickable="true"
-                android:linksClickable="true"
-                android:text="Forgot Password?"
-                android:textColor="@color/white"
-                android:textStyle="bold"
-                app:layout_constraintBottom_toTopOf="@+id/loginButton"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/passwordForm" />
-
-
-            <!--Register TextView-->
-            <TextView
-                android:id="@+id/registerAccount"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:layout_marginEnd="10dp"
-                android:clickable="true"
-                android:linksClickable="true"
-                android:text="Don't have an account?"
-                android:textColor="@color/white"
-                android:textStyle="bold"
-                app:layout_constraintBottom_toTopOf="@+id/loginButton"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/passwordForm" />
-
+                app:layout_constraintTop_toBottomOf="@id/optionsContainer" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

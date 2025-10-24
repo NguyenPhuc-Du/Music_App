@@ -7,12 +7,12 @@ import retrofit2.http.Body;
 import retrofit2.http.POST;
 
 public interface UserDao {
-    @POST("auth/register")
+    @POST("api/auth/register")
     Call<Map<String, String>> register(@Body User user);
 
-    @POST("auth/login")
+    @POST("api/auth/login")
     Call<Map<String, Object>> login(@Body User user);
 
-    @POST("auth/resetPassword")
+    @POST("api/auth/resetPassword")
     Call<Map<String, String>> resetPassword(@Body Map<String, String> data);
 }

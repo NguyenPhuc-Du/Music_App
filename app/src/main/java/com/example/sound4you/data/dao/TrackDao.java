@@ -10,12 +10,12 @@ import retrofit2.http.Body;
 
 public interface TrackDao {
 
-    @GET("Track")
+    @GET("api/Track")
     Call<List<Track>> getAllTracks();
 
-    @GET("Track/{id}")
+    @GET("api/Track/{id}")
     Call<Track> getTrackByID(@Path("id") int id);
 
-    @POST("Track")
+    @POST("api/Track")
     Call<Track> createTrack(@Body Track track);
 }
