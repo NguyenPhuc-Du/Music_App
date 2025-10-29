@@ -16,23 +16,23 @@ public class AdminRepository {
         api = ApiClient.getClient().create(AdminDao.class);
     }
 
-    public Call<List<User>> getAllUsers() {
-        return api.getAllUsers();
+    public Call<List<User>> loadUsers() {
+        return api.loadUsers();
     }
 
     public Call<Map<String, String>> deleteUser(int id) {
         return api.deleteUser(id);
     }
 
-    public Call<List<Track>> getAllTracks() {
-        return api.getAllTracks();
+    public Call<List<Track>> loadTracks() {
+        return api.loadTracks();
     }
 
     public Call<Map<String, String>> deleteTrack(int id) {
         return api.deleteTrack(id);
     }
 
-    public Call<Map<String, Integer>> getStatistics() {
-        return api.getStatistics();
+    public Call<Map<String, Integer>> loadStats() {
+        return api.loadStats();
     }
 }

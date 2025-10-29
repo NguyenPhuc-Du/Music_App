@@ -11,7 +11,7 @@ public interface AdminDao {
 
     //Lấy danh sách người dùng
     @GET("/api/admin/users")
-    Call<List<User>> getAllUsers();
+    Call<List<User>> loadUsers();
 
     //Xóa người dùng theo ID
     @DELETE("/api/admin/users/{id}")
@@ -19,7 +19,7 @@ public interface AdminDao {
 
     //Lấy danh sách bài nhạc
     @GET("/api/admin/tracks")
-    Call<List<Track>> getAllTracks();
+    Call<List<Track>> loadTracks();
 
     //Xóa bài nhạc theo ID
     @DELETE("/api/admin/tracks/{id}")
@@ -27,5 +27,5 @@ public interface AdminDao {
 
     //Lấy thống kê hệ thống
     @GET("/api/admin/stats")
-    Call<Map<String, Integer>> getStatistics();
+    Call<Map<String, Integer>> loadStats();
 }

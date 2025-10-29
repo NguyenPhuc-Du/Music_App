@@ -10,4 +10,6 @@ public interface AdminView {
     void onTracksLoaded(List<Track> tracks);
     void onStatsLoaded(Map<String, Integer> stats);
     void onError(String message);
+
+    void onMessage(String message);
 }
