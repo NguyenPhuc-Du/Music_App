@@ -3,39 +3,18 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".ui.admin.AdminDashboardFragment">
+    android:layout_height="match_parent">
 
-    <!--Background Image-->
-    <ImageView
-        android:id="@+id/adminDashboardBackground"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:scaleType="centerCrop"
-        android:src="@drawable/bg_login"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <!--Overlay background-->
-    <View
-        android:id="@+id/gradientOverlayAdminDashboard"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:background="@drawable/gradient_overlay_background"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+    <!--Background Image and Overlay go here if you want them-->
+    <!-- For simplicity, let's assume the background is handled by the parent container -->
 
     <ImageView
         android:id="@+id/logoImgView"
         android:layout_width="50dp"
         android:layout_height="50dp"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
-        android:src="@drawable/logo"
+        android:layout_marginTop="30dp"
+        android:src="@drawable/ic_logo"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -43,7 +22,7 @@
         android:id="@+id/dashboardTxt"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="30dp"
         android:fontFamily="sans-serif"
         android:text="DASHBOARD"
         android:textColor="@color/white"
@@ -63,14 +42,6 @@
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/dashboardTxt">
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:text="Hello name"
-            android:textColor="@color/white"
-            android:textSize="26sp" />
 
     </LinearLayout>
 
@@ -191,65 +162,6 @@
             android:textColor="@color/white"
             android:textSize="25sp"/>
 
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:orientation="horizontal"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent">
-
-        <ImageView
-            android:id="@+id/manage_users_icon"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:contentDescription="Manage Users"
-            android:padding="8dp"
-            android:src="@drawable/ic_person"
-            app:tint="@color/white" />
-
-        <ImageView
-            android:id="@+id/manage_tracks_icon"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:contentDescription="Manage Tracks"
-            android:padding="8dp"
-            android:src="@drawable/ic_music_note"
-            app:tint="@color/white" />
-
-        <ImageView
-            android:id="@+id/other_icon"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:contentDescription="Add Music"
-            android:padding="8dp"
-            android:src="@drawable/ic_music_note_add"
-            app:tint="@color/white" />
-
-        <ImageView
-            android:id="@+id/statistics_icon"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:contentDescription="Statistics"
-            android:padding="8dp"
-            android:src="@drawable/ic_chart_data"
-            app:tint="@color/white" />
-
-        <ImageView
-            android:id="@+id/logout_icon"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:contentDescription="Logout"
-            android:padding="8dp"
-            android:src="@drawable/ic_logout"
-            app:tint="@color/white" />
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,8 +1,8 @@
-package com.example.sound4you.data.model;
+package com.example.sound4you.ui.admin;
 
 import java.io.Serializable;
 
-public class Track implements Serializable {
+public class TrackItem implements Serializable {
     private int id;
     private int user_id;
     private int is_verified;
@@ -12,14 +12,15 @@ public class Track implements Serializable {
     private String audio_url;
     private String cover_url;
 
-    public Track(int id, int user_id, String artist, String artistProfilePicture, String title, String audio_url, String cover_url) {
+    public TrackItem(int id, int user_id, String artist, String artistProfilePicture, String title, String audio_url, String cover_url, int is_verified) {
         this.id = id;
-        this.user_id = id;
+        this.user_id = user_id;
         this.artist = artist;
         this.artistProfilePicture = artistProfilePicture;
         this.title = title;
         this.audio_url = audio_url;
         this.cover_url = cover_url;
+        this.is_verified = is_verified;
     }
 
     public int getId() {
@@ -48,6 +49,10 @@ public class Track implements Serializable {
 
     public String getArtistProfilePicture() {
         return artistProfilePicture;
+    }
+
+    public void setIs_verified(int is_verified) {
+        this.is_verified = is_verified;
     }
 
     public int getIs_verified() {

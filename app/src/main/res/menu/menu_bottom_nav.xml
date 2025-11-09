@@ -1,24 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
-
     <item
-        android:id="@+id/homeFragment"
-        android:title="Home"
-        android:icon="@drawable/ic_home"/>
-
+        android:id="@+id/nav_dashboard"
+        android:icon="@drawable/ic_dashboard"
+        android:title="Dashboard" />
     <item
-        android:id="@+id/feedFragment"
-        android:title="Feed"
-        android:icon="@drawable/ic_feed"/>
-
+        android:id="@+id/nav_tracks"
+        android:icon="@drawable/ic_music_note"
+        android:title="Tracks" />
     <item
-        android:id="@+id/followingFeedFragment"
-        android:title="Following Feed"
-        android:icon="@drawable/ic_friendship"/>
-
+        android:id="@+id/nav_users"
+        android:icon="@drawable/ic_person"
+        android:title="Users" />
     <item
-        android:id="@+id/profileFragment"
-        android:title="User"
-        android:icon="@drawable/ic_user"/>
-
+        android:id="@+id/nav_stats"
+        android:icon="@drawable/ic_chart_data"
+        android:title="Stats" />
+    <item
+        android:id="@+id/nav_logout"
+        android:icon="@drawable/ic_logout"
+        android:title="Logout" />
 </menu>

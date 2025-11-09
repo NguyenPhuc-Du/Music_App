@@ -1,55 +1,51 @@
 package com.example.sound4you.data.model;
 
+import com.google.gson.annotations.SerializedName;
+
 public class User {
+    @SerializedName("id")
     private int id;
+
+    @SerializedName("username")
     private String username;
+
+    @SerializedName("email")
     private String email;
-    private String password;
+
+    @SerializedName("role")
     private int role;
-    private String bio;
-    private String profilePictureURL;
-    private String createdAt;
 
-    public User(int id, String username, String email, String password, int role, String bio, String profilePictureURL, String createdAt) {
-        this.id = id;
-        this.username = username;
-        this.email = email;
-        this.password = password;
-        this.role = role;
-        this.bio = bio;
-        this.profilePictureURL = profilePictureURL;
-        this.createdAt = createdAt;
-    }
+    @SerializedName("profile_picture")
+    private String profile_picture;
 
-    public int getID() {
-        return id;
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public String getPassword() {
-        return password;
+    public String getProfile_picture() {
+        return profile_picture;
     }
 
     public int getRole() {
         return role;
     }
 
-    public String getBio() {
-        return bio;
+    // Getters và Setters
+    public int getId() {
+        return id;
     }
 
-    public String getProfilePictureURL() {
-        return profilePictureURL;
+    public void setId(int id) {
+        this.id = id;
     }
 
-    public String getCreatedAt() {
-        return createdAt;
+    public String getUsername() {
+        return username;
     }
+
+    public void setName(String username) {
+        this.username = username;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+
 }
