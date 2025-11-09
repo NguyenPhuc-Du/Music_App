@@ -42,7 +42,7 @@ public class HomeChildAdapter extends RecyclerView.Adapter<HomeChildAdapter.Trac
         holder.tvArtist.setText(track.getArtist());
 
         Glide.with(context)
-                .load(track.getCoverURL())
+                .load(track.getCover_url())
                 .placeholder(R.drawable.ic_music_placeholder)
                 .into(holder.ivCover);
     }

@@ -1,66 +1,165 @@
 package com.example.sound4you.ui.admin;
 
 import android.os.Bundle;
-
-import androidx.fragment.app.Fragment;
-
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.sound4you.R;
+import com.example.sound4you.data.model.User;
+import com.example.sound4you.utils.ApiClient;
+import com.example.sound4you.utils.ApiService;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link ManageUserFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
-public class ManageUserFragment extends Fragment {
+import java.util.ArrayList;
+import java.util.List;
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
+import okhttp3.ResponseBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+public class ManageUserFragment extends Fragment implements ItemClickListener {
+    private static final String TAG = "ManageUserFragment"; // Thêm TAG để debug
+    private RecyclerView recyclerView;
+    private List<UserItem> userItemList; // List cho Adapter (UI Model)
+    private UserAdapter userAdapter;
+    private ApiService apiService; // Thêm ApiService
 
-    public ManageUserFragment() {
-        // Required empty public constructor
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        // 1. Khởi tạo ApiService MỘT LẦN
+        apiService = ApiClient.getService();
+    }
+
+    @Nullable
+    @Override
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        return inflater.inflate(R.layout.fragment_manage_user, container, false);
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        // 2. Thiết lập RecyclerView
+        recyclerView = view.findViewById(R.id.manage_list_user);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+
+        // 3. Khởi tạo list và adapter RỖNG
+        userItemList = new ArrayList<>();
+        userAdapter = new UserAdapter(userItemList);
+        recyclerView.setAdapter(userAdapter);
+        userAdapter.setOnUserActionListener(this);
+
+        // 4. GỌI API để lấy dữ liệu thật
+        fetchUsers();
     }
 
     /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment ManageUserFragment.
+     * Hàm này gọi API, lấy List<User> và "chuyển đổi" nó
+     * thành List<UserItem> cho adapter.
      */
-    // TODO: Rename and change types and number of parameters
-    public static ManageUserFragment newInstance(String param1, String param2) {
-        ManageUserFragment fragment = new ManageUserFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
+    private void fetchUsers() {
+        Log.d(TAG, "Đang tải danh sách người dùng...");
+
+        // 1. SỬA LẠI ĐÂY: Phải là List<User>
+        Call<List<User>> call = apiService.getUsers();
+
+        // 2. SỬA LẠI ĐÂY: Phải là List<User>
+        call.enqueue(new Callback<List<User>>() {
+            @Override
+            public void onResponse(Call<List<User>> call, Response<List<User>> response) {
+                Log.d("API_DELETE", "Response code: " + response.code());
+
+                if (response.isSuccessful() && response.body() != null) {
+
+                    // 3. SỬA LẠI ĐÂY: Không cần myResponse nữa,
+                    // response.body() CHÍNH LÀ danh sách
+                    List<User> apiUserList = response.body();
+
+                    Log.d(TAG, "Tải thành công " + apiUserList.size() + " users.");
+
+                    // 4. Code bên dưới giữ nguyên (đã đúng)
+                    userItemList.clear();
+
+                    for (User apiUser : apiUserList) {
+                        int imageResId = R.drawable.ic_logo;
+
+                        UserItem uiItem = new UserItem(
+                                apiUser.getId(),
+                                apiUser.getUsername(),
+                                apiUser.getEmail(),
+                                apiUser.getProfile_picture(),
+                                apiUser.getRole()
+                        );
+                        userItemList.add(uiItem);
+                    }
+
+                    userAdapter.notifyDataSetChanged();
+
+                } else {
+                    Log.e(TAG, "Tải thất bại. Code: " + response.code());
+                    if (getContext() != null) {
+                        Toast.makeText(getContext(), "Không thể tải danh sách người dùng", Toast.LENGTH_SHORT).show();
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<User>> call, Throwable t) {
+                Log.e(TAG, "Lỗi kết nối: " + t.getMessage());
+                if (getContext() != null) {
+                    Toast.makeText(getContext(), "Lỗi kết nối mạng", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
     }
 
+    // Override cho vui =)))
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
-    }
+    public void onApproveClick(int position) {}
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_manage_user, container, false);
+    public void onDeleteClick(int position) {
+        int realPosition = userAdapter.getAdapterPositionFromItem(position);
+        if (realPosition == RecyclerView.NO_POSITION) return;
+
+        UserItem clickedItem = userItemList.get(realPosition);
+        int userId = clickedItem.getId();
+
+        Call<ResponseBody> call = apiService.deleteUser(userId);
+        call.enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                if (response.isSuccessful()) {
+
+                    // CẬP NHẬT LIST VÀ ADAPTER BẰNG realPosition
+                    userItemList.remove(realPosition);
+                    userAdapter.notifyItemRemoved(realPosition);
+
+                    Toast.makeText(getContext(), "Deleted: " + clickedItem.getUserName(), Toast.LENGTH_SHORT).show();
+                    Log.d(TAG, "Deleted user ID: " + userId);
+                } else {
+                    Toast.makeText(getContext(), "Lỗi: Không thể xóa người dùng", Toast.LENGTH_SHORT).show();
+                    Log.e(TAG, "Lỗi delete. Code: " + response.code());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                Toast.makeText(getContext(), "Lỗi kết nối mạng", Toast.LENGTH_SHORT).show();
+                Log.e(TAG, "Lỗi onFailure (delete): " + t.getMessage());
+            }
+        });
     }
 }

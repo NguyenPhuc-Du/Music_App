@@ -1,42 +1,40 @@
 package com.example.sound4you;
 
 import android.os.Bundle;
-import android.view.View;
-
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
-import androidx.annotation.NonNull;
-import androidx.navigation.NavController;
-import androidx.navigation.Navigation;
-import androidx.navigation.fragment.NavHostFragment;
-import androidx.navigation.ui.NavigationUI;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
+import com.example.sound4you.ui.admin.AdminDashboardFragment;
 
-import com.google.android.material.bottomnavigation.BottomNavigationView;
-
+/**
+ * MainActivity là điểm vào chính của ứng dụng.
+ * Nhiệm vụ duy nhất của nó là thiết lập layout chính và hiển thị Fragment đầu tiên.
+ */
 public class MainActivity extends AppCompatActivity {
-    private BottomNavigationView bottomNavigationView;
-    private NavController navController;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        EdgeToEdge.enable(this);
+        // 1. Thiết lập layout chính của Activity, layout này chứa một "khung chứa" cho Fragment.
+        setContentView(R.layout.fragment_container_view);
 
-        NavHostFragment navHostFragment = (NavHostFragment) getSupportFragmentManager()
-                .findFragmentById(R.id.navHostFragment);
+        // 2. Chỉ thực hiện việc thêm Fragment khi ứng dụng được tạo lần đầu (savedInstanceState == null).
+        if (savedInstanceState == null) {
+            FragmentManager fragmentManager = getSupportFragmentManager();
+            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
 
-        if (navHostFragment != null) {
-            navController = navHostFragment.getNavController();
+            // 3. Tạo một thể hiện của "khung chứa" chính là AdminDashboardFragment.
+            AdminDashboardFragment adminDashboardFragment = new AdminDashboardFragment();
+
+            // 4. Thay thế nội dung của "khung chứa" trong activity_main.xml bằng AdminDashboardFragment.
+            fragmentTransaction.replace(R.id.fragment_container_view, adminDashboardFragment);
+
+            // 5. Hoàn tất giao dịch.
+            fragmentTransaction.commit();
         }
-
-        bottomNavigationView = findViewById(R.id.bottomNav);
-
-        if (navController != null) {
-            NavigationUI.setupWithNavController(bottomNavigationView, navController);
-        }
-
     }
+    // LƯU Ý: Toàn bộ code về RecyclerView, Adapter, và ItemClickListener đã được xóa khỏi đây
+    // và sẽ được chuyển vào đúng Fragment của nó là ManageTrackFragment.
 }

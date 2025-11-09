@@ -33,8 +33,9 @@
         android:id="@+id/headline_manage_track"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Manage Tracks"
-        android:textSize="35sp"
+        android:text="DANH SÁCH BÀI HÁT"
+        android:layout_marginTop="30dp"
+        android:textSize="32sp"
         android:textColor="@color/white"
         android:gravity="center"
         app:layout_constraintStart_toStartOf="parent"
@@ -43,11 +44,11 @@
         android:textStyle="bold"
         android:fontFamily="sans-serif"/>
 
-    <ListView
+    <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/manage_list_track"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_marginTop="25dp"
+        android:layout_marginTop="28dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/headline_manage_track"/>

@@ -1,7 +1,11 @@
 package com.example.sound4you.data.model;
 
+import com.google.gson.annotations.SerializedName;
+
 public class User {
     private String username;
+
+    @SerializedName("email")
     private String email;
     private String password;
 
@@ -16,15 +20,16 @@ public class User {
         this.password = password;
     }
 
-    public String getUsername() {
-        return username;
+    public int getRole() {
+        return role;
     }
 
-    public String getEmail() {
-        return email;
+    // Getters và Setters
+    public int getId() {
+        return id;
     }
 
-    public String getPassword() {
-        return password;
+    public void setId(int id) {
+        this.id = id;
     }
 }

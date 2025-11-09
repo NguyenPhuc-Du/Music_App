@@ -32,4 +32,12 @@
         android:name="com.example.sound4you.ui.profile.ProfileFragment"
         android:label="Profile"
         tools:layout="@layout/fragment_profile" />
+
+    <!-- Dán đoạn code này vào file nav_graph.xml -->
+    <fragment
+        android:id="@+id/adminDashboardFragment"
+        android:name="com.example.sound4you.ui.admin.AdminDashboardFragment"
+        android:label="Admin Dashboard"
+        tools:layout="@layout/fragment_admin_dashboard" />
+
 </navigation>

@@ -18,4 +18,14 @@ public class ApiClient {
         }
         return retrofit;
     }
+
+    public static ApiService getService() {
+        // Nếu apiService chưa được tạo (còn null)
+        if (apiService == null) {
+            // Thì gọi getClient() để tạo nó
+            apiService = getClient().create(ApiService.class);
+        }
+        // Trả về service đã được tạo
+        return apiService;
+    }
 }
