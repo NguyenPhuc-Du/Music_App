@@ -28,7 +28,7 @@
     <com.google.android.material.card.MaterialCardView
         android:id="@+id/registerCard"
         android:layout_width="350dp"
-        android:layout_height="450dp"
+        android:layout_height="550dp"
         app:cardBackgroundColor="@android:color/transparent"
         app:cardCornerRadius="20dp"
         app:cardUseCompatPadding="true"
@@ -70,21 +70,43 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/usernameForm"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="15dp"
+                android:hint="Username:"
+                android:textColorHint="@color/white"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/registerTextView"
+                android:padding="10dp">
+
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/usernameInput"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+
+
+            </com.google.android.material.textfield.TextInputLayout>
 
             <!--Email input-->
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/emailForm"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="25dp"
+                android:layout_marginTop="15dp"
                 android:hint="Email:"
                 android:textColorHint="@color/white"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/registerTextView">
+                app:layout_constraintTop_toBottomOf="@id/usernameForm"
+                android:padding="10dp">
 
 
                 <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/emailInput"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content" />
 
@@ -97,12 +119,13 @@
                 android:id="@+id/passwordForm"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="25dp"
+                android:layout_marginTop="15dp"
                 android:hint="Password:"
                 android:textColorHint="@color/white"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/emailForm">
+                app:layout_constraintTop_toBottomOf="@id/emailForm"
+                android:padding="10dp">
 
 
                 <com.google.android.material.textfield.TextInputEditText
@@ -113,43 +136,69 @@
 
             </com.google.android.material.textfield.TextInputLayout>
 
-
-            <!--Confirm Password-->
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/confirmPasswordForm"
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/verifyCodeContainer"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Confirm Password: "
-                android:textColorHint="@color/white"
-                app:layout_constraintBottom_toTopOf="@+id/registerButton"
-                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/passwordForm">
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/passwordForm"
+                android:layout_marginTop="20dp">
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnTakeVerificationCode"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="15sp"
+                    android:backgroundTint="@color/white"
+                    android:text="Get Code"
+                    android:textColor="@color/black"
+                    app:cornerRadius="5sp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"/>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/codeInputLayoutForgotPassword"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="15sp"
+                    android:padding="0dp"
+                    app:hintEnabled="false"
+                    android:textColorHint="@color/white"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent">
 
 
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/confirmPasswordInput"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
+                    <!--Code input-->
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/codeValue"
+                        android:layout_width="80sp"
+                        android:layout_height="45sp"
+                        android:inputType="number"
+                        android:gravity="center"
+                        android:textColor="@color/white"
+                        android:textSize="10sp"/>
 
 
-            </com.google.android.material.textfield.TextInputLayout>
+                </com.google.android.material.textfield.TextInputLayout>
 
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
             <!--Register Button-->
             <Button
                 android:id="@+id/registerButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="100dp"
+                android:layout_marginTop="30dp"
                 android:backgroundTint="#E10914"
                 android:text="Register"
                 android:textColor="@color/white"
                 android:textSize="20sp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/passwordForm" />
-
+                app:layout_constraintTop_toBottomOf="@id/verifyCodeContainer" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

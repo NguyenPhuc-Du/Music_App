@@ -1,4 +1,5 @@
 package com.example.sound4you.presenter.auth;
 
-public class LoginPresenter {
+public interface LoginPresenter {
+    void login(String username, String password);
 }
