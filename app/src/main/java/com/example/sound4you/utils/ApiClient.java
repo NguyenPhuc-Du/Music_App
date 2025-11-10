@@ -6,7 +6,6 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 public class ApiClient {
-    private static ApiService apiService;
     private static Retrofit retrofit;
     private static final String BASE_URL = "http://phucgg.local:3000/";
 
@@ -18,15 +17,5 @@ public class ApiClient {
                     .build();
         }
         return retrofit;
-    }
-
-    public static ApiService getService() {
-        // Nếu apiService chưa được tạo (còn null)
-        if (apiService == null) {
-            // Thì gọi getClient() để tạo nó
-            apiService = getClient().create(ApiService.class);
-        }
-        // Trả về service đã được tạo
-        return apiService;
     }
 }

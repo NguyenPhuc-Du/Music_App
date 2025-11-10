@@ -55,8 +55,14 @@ public class EditProfileFragment extends Fragment implements ProfileView {
         View nowPlaying = requireActivity().findViewById(R.id.includedNowPlayingBar);
         wasNowPlayingVisible = nowPlaying.getVisibility() == View.VISIBLE;
 
-        requireActivity().findViewById(R.id.bottomNav).setVisibility(View.GONE);
-        nowPlaying.setVisibility(View.GONE);
+        if (getActivity() instanceof com.example.sound4you.MainActivity) {
+            ((com.example.sound4you.MainActivity) getActivity()).hideBottomNav();
+            // hide now playing container directly if present
+            nowPlaying.setVisibility(View.GONE);
+        } else {
+            requireActivity().findViewById(R.id.bottomNav).setVisibility(View.GONE);
+            nowPlaying.setVisibility(View.GONE);
+        }
 
         btnBack = v.findViewById(R.id.btnBackToProfile);
         btnSave = v.findViewById(R.id.btnSaveProfile);
@@ -207,9 +213,14 @@ public class EditProfileFragment extends Fragment implements ProfileView {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        requireActivity().findViewById(R.id.bottomNav).setVisibility(View.VISIBLE);
-
-        if (wasNowPlayingVisible)
-            requireActivity().findViewById(R.id.includedNowPlayingBar).setVisibility(View.VISIBLE);
+        if (getActivity() instanceof com.example.sound4you.MainActivity) {
+            ((com.example.sound4you.MainActivity) getActivity()).showBottomNav();
+            if (wasNowPlayingVisible)
+                ((com.example.sound4you.MainActivity) getActivity()).restoreNowPlayingBar();
+        } else {
+            requireActivity().findViewById(R.id.bottomNav).setVisibility(View.VISIBLE);
+            if (wasNowPlayingVisible)
+                requireActivity().findViewById(R.id.includedNowPlayingBar).setVisibility(View.VISIBLE);
+        }
     }
 }

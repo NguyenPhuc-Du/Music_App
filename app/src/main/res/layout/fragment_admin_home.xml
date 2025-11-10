@@ -3,10 +3,9 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
-
-    <!--Background Image and Overlay go here if you want them-->
-    <!-- For simplicity, let's assume the background is handled by the parent container -->
+    android:layout_height="match_parent"
+    android:background="@drawable/gradient_overlay_background"
+    tools:context=".ui.admin.AdminHomeFragment">
 
     <ImageView
         android:id="@+id/logoImgView"
@@ -23,45 +22,28 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="30dp"
-        android:fontFamily="sans-serif"
         android:text="DASHBOARD"
-        android:textColor="@color/white"
-        android:textSize="35sp"
+        android:textSize="30sp"
         android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:textColor="@color/white"
         app:layout_constraintStart_toEndOf="@+id/logoImgView"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <!-- Pending -->
     <LinearLayout
-        android:id="@+id/hello_layout"
+        android:id="@+id/layout_pending"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="50dp"
-        android:orientation="horizontal"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/dashboardTxt">
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/pending_layout"
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
         android:layout_marginTop="80dp"
         android:orientation="horizontal"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintTop_toBottomOf="@+id/dashboardTxt"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/hello_layout">
+        app:layout_constraintEnd_toEndOf="parent"
+        android:paddingHorizontal="16dp">
 
         <ImageView
-            android:id="@+id/report_icon"
             android:layout_width="60dp"
-            android:layout_height="match_parent"
-            android:contentDescription="Pending Musics"
-            android:padding="8dp"
+            android:layout_height="60dp"
             android:src="@drawable/ic_report"
             app:tint="#FF0000" />
 
@@ -69,39 +51,38 @@
             android:id="@+id/number_of_pending_text"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:gravity="center"
-            android:text="Pending musics: "
+            android:gravity="center_vertical"
+            android:text="Pending musics:"
             android:textColor="@color/white"
-            android:textSize="25sp" />
+            android:textSize="20sp"
+            android:layout_marginStart="12dp" />
 
         <TextView
             android:id="@+id/number_of_pending"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:gravity="center"
+            android:gravity="center_vertical"
             android:text="0"
             android:textColor="@color/white"
-            android:textSize="25sp"/>
-
+            android:textSize="20sp"
+            android:layout_marginStart="8dp" />
     </LinearLayout>
 
+    <!-- Approved -->
     <LinearLayout
-        android:id="@+id/approved_layout"
+        android:id="@+id/layout_approved"
         android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:layout_marginTop="80dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"
         android:orientation="horizontal"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintTop_toBottomOf="@+id/layout_pending"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/pending_layout">
+        app:layout_constraintEnd_toEndOf="parent"
+        android:paddingHorizontal="16dp">
 
         <ImageView
-            android:id="@+id/cloudDone_icon"
             android:layout_width="60dp"
-            android:layout_height="match_parent"
-            android:contentDescription="Musics are approved"
-            android:padding="8dp"
+            android:layout_height="60dp"
             android:src="@drawable/ic_cloud_done"
             app:tint="#87FF00" />
 
@@ -109,38 +90,38 @@
             android:id="@+id/number_of_approved_songs_text"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:gravity="center"
-            android:text="Approved Songs: "
+            android:gravity="center_vertical"
+            android:text="Approved Songs:"
             android:textColor="@color/white"
-            android:textSize="25sp" />
+            android:textSize="20sp"
+            android:layout_marginStart="12dp" />
 
         <TextView
             android:id="@+id/number_of_approved"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:gravity="center"
+            android:gravity="center_vertical"
             android:text="0"
             android:textColor="@color/white"
-            android:textSize="25sp"/>
-
+            android:textSize="20sp"
+            android:layout_marginStart="8dp" />
     </LinearLayout>
 
+    <!-- Users -->
     <LinearLayout
+        android:id="@+id/layout_users"
         android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:layout_marginTop="80dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"
         android:orientation="horizontal"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintTop_toBottomOf="@+id/layout_approved"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/approved_layout">
+        app:layout_constraintEnd_toEndOf="parent"
+        android:paddingHorizontal="16dp">
 
         <ImageView
-            android:id="@+id/person4_icon"
             android:layout_width="60dp"
-            android:layout_height="match_parent"
-            android:contentDescription="Person_4 Icon"
-            android:padding="8dp"
+            android:layout_height="60dp"
             android:src="@drawable/ic_person_4"
             app:tint="#FFC100" />
 
@@ -148,20 +129,21 @@
             android:id="@+id/number_of_users_text"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:gravity="center"
-            android:text="Created Users: "
+            android:gravity="center_vertical"
+            android:text="Created Users:"
             android:textColor="@color/white"
-            android:textSize="25sp" />
+            android:textSize="20sp"
+            android:layout_marginStart="12dp" />
 
         <TextView
             android:id="@+id/number_of_users"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:gravity="center"
+            android:gravity="center_vertical"
             android:text="0"
             android:textColor="@color/white"
-            android:textSize="25sp"/>
-
+            android:textSize="20sp"
+            android:layout_marginStart="8dp" />
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

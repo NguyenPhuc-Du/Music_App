@@ -19,6 +19,7 @@ import androidx.navigation.fragment.NavHostFragment;
 import com.example.sound4you.MainActivity;
 import com.example.sound4you.presenter.auth.LoginPresenterImpl;
 import com.example.sound4you.R;
+import com.example.sound4you.ui.admin.AdminActivity;
 
 import com.google.android.material.textfield.TextInputEditText;
 
@@ -79,9 +80,9 @@ public class LoginFragment extends Fragment implements AuthView{
 
     @Override
     public void onSuccess (String message) {
-        if (message.equals("admin")) {
-//            startActivity(new Intent(getContext(), AdminActivity.class));
-//            requireActivity().finish();
+        if (message != null && message.equals("admin")) {
+            startActivity(new Intent(getContext(), AdminActivity.class));
+            requireActivity().finish();
         }
         else {
             startActivity(new Intent(getContext(), MainActivity.class));

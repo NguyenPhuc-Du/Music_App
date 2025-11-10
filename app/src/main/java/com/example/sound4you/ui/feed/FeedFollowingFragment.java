@@ -15,6 +15,7 @@ import com.example.sound4you.data.model.Track;
 import com.example.sound4you.presenter.feed.FeedFollowingPresenter;
 import com.example.sound4you.presenter.feed.FeedFollowingPresenterImpl;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 import java.util.List;
 import java.util.ArrayList;
@@ -41,7 +42,9 @@ public class FeedFollowingFragment extends Fragment implements FeedView{
         adapter = new FeedFollowingAdapter(getContext(), data);
         rvFeedFollowing.setAdapter(adapter);
 
-        firebaseId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        firebaseId = user != null ? user.getUid() : null;
+
         presenter = new FeedFollowingPresenterImpl(this);
 
         presenter.loadFollowingFeed(firebaseId);

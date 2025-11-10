@@ -19,6 +19,7 @@ import androidx.fragment.app.Fragment;
 import com.example.sound4you.data.model.Track;
 import com.example.sound4you.ui.follow.FollowerListFragment;
 import com.example.sound4you.ui.follow.FollowingListFragment;
+import com.example.sound4you.ui.search.SearchFragment;
 import com.example.sound4you.ui.stream.NowPlayingBar;
 import com.example.sound4you.ui.stream.StreamTrackFragment;
 import com.example.sound4you.utils.MediaPlayerManager;
@@ -134,7 +135,8 @@ public class MainActivity extends AppCompatActivity implements NowPlayingBar.OnN
                     || f instanceof UploadFragment
                     || f instanceof StreamTrackFragment
                     || f instanceof FollowerListFragment
-                    || f instanceof FollowingListFragment) {
+                    || f instanceof FollowingListFragment
+                    || f instanceof SearchFragment) {
                 hide = true;
             }
         }

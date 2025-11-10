@@ -89,7 +89,10 @@ public class ProfileFragment extends Fragment implements ProfileView, TrackView 
             trackPresenter.loadTracksByUserLimited(userId, 3);
             btnEdit.setVisibility(View.GONE);
             likesHeader.setVisibility(View.GONE);
-            requireActivity().findViewById(R.id.bottomNav).setVisibility(View.GONE);
+
+            if (getActivity() instanceof com.example.sound4you.MainActivity) {
+                ((com.example.sound4you.MainActivity) getActivity()).hideBottomNav();
+            }
         } else {
             isSelf = true;
             profilePresenter.loadProfileByFirebase(firebaseUid);
@@ -108,8 +111,13 @@ public class ProfileFragment extends Fragment implements ProfileView, TrackView 
                 .setMessage("Bạn có chắc muốn đăng xuất không?")
                 .setPositiveButton("Đăng xuất", (d, w) -> {
                     FirebaseAuth.getInstance().signOut();
-                    SharedPreferences prefs = requireContext().getSharedPreferences("user_prefs", Context.MODE_PRIVATE);
-                    prefs.edit().clear().apply();
+
+                    // Clear both preference stores used by auth flows to avoid automatic re-login
+                    SharedPreferences prefs1 = requireContext().getSharedPreferences("user_prefs", Context.MODE_PRIVATE);
+                    prefs1.edit().clear().apply();
+                    SharedPreferences prefs2 = requireContext().getSharedPreferences("AuthPreferences", Context.MODE_PRIVATE);
+                    prefs2.edit().clear().apply();
+
                     Intent intent = new Intent(requireContext(), AuthActivity.class);
                     intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
                     startActivity(intent);
@@ -185,6 +193,8 @@ public class ProfileFragment extends Fragment implements ProfileView, TrackView 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        requireActivity().findViewById(R.id.bottomNav).setVisibility(View.VISIBLE);
+        if (getActivity() instanceof com.example.sound4you.MainActivity) {
+            ((com.example.sound4you.MainActivity) getActivity()).showBottomNav();
+        }
     }
 }

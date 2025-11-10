@@ -17,7 +17,7 @@ public class AuthRepository {
 
     public AuthRepository(Context context) {
         userDao = ApiClient.getClient().create(UserDao.class);
-        sharedPreferences = context.getSharedPreferences("AuthPrefs", Context.MODE_PRIVATE);
+        sharedPreferences = context.getSharedPreferences("AuthPreferences", Context.MODE_PRIVATE);
     }
 
     public void register(User user, Callback<Map<String, String>> callback) {
@@ -33,11 +33,11 @@ public class AuthRepository {
     }
 
     public void saveToken(String token) {
-        sharedPreferences.edit().putString("token", token).apply();
+        sharedPreferences.edit().putString("Token", token).apply();
     }
 
     public String getToken() {
-        return sharedPreferences.getString("token", null);
+        return sharedPreferences.getString("Token", null);
     }
 
     public void clearToken() {

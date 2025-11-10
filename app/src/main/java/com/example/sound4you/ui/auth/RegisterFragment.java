@@ -59,7 +59,7 @@ public class RegisterFragment extends Fragment implements AuthView{
                 return;
             }
 
-            if (isStrongPassword(password)) {
+            if (!isStrongPassword(password)) {
                 Toast.makeText(getContext(), "Mật khẩu phải có ít nhất 6 ký tự, bao gồm chữ hoa, chữ thường và số", Toast.LENGTH_SHORT).show();
                 return;
             }

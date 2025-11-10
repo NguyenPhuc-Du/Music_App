@@ -6,30 +6,30 @@
     android:layout_height="match_parent"
     tools:context=".ui.admin.AdminDashboardFragment">
 
-    <!--Background Image-->
+    <!-- Background -->
     <ImageView
         android:id="@+id/adminDashboardBackground"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
         android:scaleType="centerCrop"
         android:src="@drawable/bg_login"
+        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent" />
 
-    <!--Overlay background-->
+    <!-- Overlay -->
     <View
         android:id="@+id/gradientOverlayAdminDashboard"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:background="@drawable/gradient_overlay_background"
+        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent" />
 
-    <!-- This is the container where other fragments will be displayed -->
+    <!-- Container -->
     <FrameLayout
         android:id="@+id/admin_fragment_container"
         android:layout_width="0dp"
@@ -51,6 +51,6 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:menu="@menu/menu_bottom_user_nav" />
+        app:menu="@menu/menu_bottom_admin_nav" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
