@@ -10,7 +10,39 @@
         android:id="@+id/homeFragment"
         android:name="com.example.sound4you.ui.home.HomeFragment"
         android:label="Home"
-        tools:layout="@layout/fragment_home" >
+        tools:layout="@layout/fragment_home">
+
+        <action
+            android:id="@+id/action_homeFragment_to_uploadFragment"
+            app:destination="@id/uploadFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/fade_out"
+            app:popEnterAnim="@anim/fade_in"
+            app:popExitAnim="@anim/slide_out_right" />
+
+        <action
+            android:id="@+id/action_homeFragment_to_searchFragment"
+            app:destination="@id/searchFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/fade_out"
+            app:popEnterAnim="@anim/fade_in"
+            app:popExitAnim="@anim/slide_out_right" />
+    </fragment>
+
+    <!-- Upload Fragment -->
+    <fragment
+        android:id="@+id/uploadFragment"
+        android:name="com.example.sound4you.ui.upload.UploadFragment"
+        android:label="Upload"
+        tools:layout="@layout/fragment_upload" >
+    </fragment>
+
+    <!-- Search Fragment -->
+    <fragment
+        android:id="@+id/searchFragment"
+        android:name="com.example.sound4you.ui.search.SearchFragment"
+        android:label="Search"
+        tools:layout="@layout/fragment_search" >
     </fragment>
 
     <!-- Feed Fragment -->
@@ -20,11 +52,12 @@
         android:label="Feed"
         tools:layout="@layout/fragment_feed"/>
 
+    <!-- Feed Following Fragment -->
     <fragment
         android:id="@+id/followingFeedFragment"
-        android:name="com.example.sound4you.ui.feed.FeedFragment"
-        android:label="Feed"
-        tools:layout="@layout/fragment_feed"/>
+        android:name="com.example.sound4you.ui.feed.FeedFollowingFragment"
+        android:label="FeedFollowing"
+        tools:layout="@layout/fragment_feed_following"/>
 
     <!-- Profile Fragment -->
     <fragment

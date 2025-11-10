@@ -10,6 +10,8 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 
+import android.util.Log;
+
 import com.example.sound4you.R;
 import com.example.sound4you.data.model.Track;
 import java.util.List;
@@ -17,10 +19,16 @@ import java.util.List;
 public class HomeChildAdapter extends RecyclerView.Adapter<HomeChildAdapter.TrackViewHolder>{
     private final Context context;
     private final List<Track> trackList;
+    private final OnTrackClickListener listener;
 
-    public HomeChildAdapter(Context context, List<Track> trackList) {
+    public interface OnTrackClickListener {
+        void onTrackClick(Track track);
+    }
+
+    public HomeChildAdapter(Context context, List<Track> trackList, OnTrackClickListener listener) {
         this.context = context;
         this.trackList = trackList;
+        this.listener = listener;
     }
 
     @NonNull
@@ -31,7 +39,6 @@ public class HomeChildAdapter extends RecyclerView.Adapter<HomeChildAdapter.Trac
                 : R.layout.item_card_medium;
 
         View view = LayoutInflater.from(context).inflate(layout, parent, false);
-
         return new TrackViewHolder(view);
     }
 
@@ -45,6 +52,8 @@ public class HomeChildAdapter extends RecyclerView.Adapter<HomeChildAdapter.Trac
                 .load(track.getCover_url())
                 .placeholder(R.drawable.ic_music_placeholder)
                 .into(holder.ivCover);
+
+        holder.itemView.setOnClickListener(v -> listener.onTrackClick(track));
     }
 
     @Override
@@ -67,5 +76,4 @@ public class HomeChildAdapter extends RecyclerView.Adapter<HomeChildAdapter.Trac
             if (tvArtist == null) tvArtist = itemView.findViewById(R.id.tvTrackSourceMedium);
         }
     }
-
 }

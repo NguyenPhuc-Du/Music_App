@@ -33,8 +33,7 @@ android {
 }
 
 dependencies {
-    implementation("com.github.bumptech.glide:glide:4.16.0")
-    annotationProcessor("com.github.bumptech.glide:compiler:4.16.0")
+
     implementation(libs.appcompat)
     implementation(libs.material)
     implementation(libs.activity)
@@ -46,15 +45,19 @@ dependencies {
     androidTestImplementation(libs.espresso.core)
     implementation("com.google.firebase:firebase-analytics")
     implementation(platform("com.google.firebase:firebase-bom:34.3.0"))
-    implementation("com.github.PhilJay:MPAndroidChart:v3.1.0")
-    // Dùng cho Retrofit
+
+    val nav_version = "2.7.7"
+    implementation("androidx.navigation:navigation-fragment:$nav_version")
+    implementation("androidx.navigation:navigation-ui:$nav_version")
+
+    // Retrofit
     implementation("com.squareup.retrofit2:retrofit:2.9.0")
-    // Dùng để tự động chuyển đổi JSON (từ API) sang Data Class
+// Gson converter (để tự parse JSON thành object Java)
     implementation("com.squareup.retrofit2:converter-gson:2.9.0")
-    // Dùng để hỗ trợ Coroutines (cách gọi bất đồng bộ hiện đại)
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
-    implementation("com.google.firebase:firebase-auth")
-    implementation("com.google.firebase:firebase-firestore")
-    implementation("com.google.firebase:firebase-database")
-    implementation("com.google.firebase:firebase-storage")
+// OkHttp (thư viện nền cho Retrofit - giúp debug network)
+    implementation("com.squareup.okhttp3:logging-interceptor:4.11.0")
+
+    implementation ("com.github.bumptech.glide:glide:4.16.0")
+    annotationProcessor ("com.github.bumptech.glide:compiler:4.16.0")
+
 }

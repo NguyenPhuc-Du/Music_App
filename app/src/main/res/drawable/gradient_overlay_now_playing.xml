@@ -5,7 +5,7 @@
     <item android:gravity="left">
         <shape>
             <gradient
-                android:startColor="#242424"
+                android:startColor="#80616161"
             android:endColor="@android:color/transparent"
             android:angle="0"/>
         </shape>
@@ -15,7 +15,7 @@
     <item android:gravity="right">
         <shape>
             <gradient
-                android:startColor="#363636"
+                android:startColor="#80414141"
                 android:endColor="@android:color/transparent"
                 android:angle="180"/>
         </shape>

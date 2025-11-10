@@ -1,4 +1,6 @@
 package com.example.sound4you.ui.upload;
 
-public class UploadView {
+public interface UploadView {
+    void onUploadSuccess(String message);
+    void onUploadError(String error);
 }

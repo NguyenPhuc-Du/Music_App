@@ -1,60 +1,85 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/black"
-    android:orientation="horizontal"
-    android:gravity="center_vertical"
-    android:padding="5dp">
+    android:layout_marginStart="12dp"
+    android:layout_marginEnd="12dp"
+    android:layout_marginTop="6dp"
+    android:layout_marginBottom="6dp"
+    app:cardCornerRadius="12dp"
+    app:cardElevation="4dp"
+    app:strokeWidth="0dp"
+    android:foreground="?attr/selectableItemBackground"
+    android:clickable="true"
+    android:focusable="true">
 
-    <ImageView
-        android:id="@+id/ivTrackCoverMedium"
-        android:layout_width="60dp"
-        android:layout_height="60dp"
-        android:adjustViewBounds="true"
-        android:scaleType="centerCrop"
-        android:background="#333"
-        android:padding="5dp"
-        android:layout_margin="5dp"/>
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        android:padding="8dp">
 
-    <LinearLayout
-        android:id="@+id/boxTrackMedium"
-        android:layout_width="280dp"
-        android:layout_height="60dp"
-        android:orientation="vertical"
-        android:background="#333"
-        android:layout_margin="5dp">
+        <ImageView
+            android:id="@+id/ivTrackCoverLove"
+            android:layout_width="64dp"
+            android:layout_height="64dp"
+            android:scaleType="centerCrop"
+            android:contentDescription="Cover"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:src="@drawable/ic_music_placeholder"
+            android:background="@color/gray_dark"
+            android:clipToOutline="true"
+            android:outlineProvider="bounds" />
 
-        <TextView
-            android:id="@+id/tvTrackTitleMedium"
-            android:layout_width="match_parent"
-            android:layout_height="30dp"
-            android:maxLines="1"
-            android:ellipsize="end"
-            android:fontFamily="sans-serif"
-            android:textSize="15sp"
-            android:textColor="#FFF"
-            android:textStyle="bold"/>
+        <LinearLayout
+            android:id="@+id/boxTrackLove"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintStart_toEndOf="@id/ivTrackCoverLove"
+            app:layout_constraintEnd_toStartOf="@+id/btnLikeTrack"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:layout_marginStart="12dp"
+            android:gravity="center_vertical">
 
-        <TextView
-            android:id="@+id/tvTrackSourceMedium"
-            android:layout_width="match_parent"
-            android:layout_height="30dp"
-            android:maxLines="1"
-            android:ellipsize="end"
-            android:fontFamily="sans-serif"
-            android:textSize="15sp"
-            android:textColor="#EEEEEE"/>
+            <TextView
+                android:id="@+id/tvTrackTitleLove"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:maxLines="1"
+                android:ellipsize="end"
+                android:fontFamily="sans-serif-medium"
+                android:textSize="16sp"
+                android:textColor="@color/white"
+                android:textStyle="bold" />
 
-    </LinearLayout>
+            <TextView
+                android:id="@+id/tvTrackSourceLove"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:maxLines="1"
+                android:ellipsize="end"
+                android:fontFamily="sans-serif"
+                android:textSize="13sp"
+                android:textColor="@color/gray_light" />
 
-    <ImageButton
-        android:id="@+id/btnLikeTrack"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:background="?attr/selectableItemBackgroundBorderless"
-        android:src="@drawable/ic_like"
-        app:tint="#FF7A00"/>
+        </LinearLayout>
 
-</LinearLayout>
+        <ImageButton
+            android:id="@+id/btnLikeTrack"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:src="@drawable/ic_like"
+            app:tint="@color/accent_orange"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:layout_marginEnd="8dp" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</com.google.android.material.card.MaterialCardView>

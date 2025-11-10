@@ -1,6 +1,5 @@
 package com.example.sound4you.data.model;
 
-import com.example.sound4you.data.model.Track;
 import java.util.List;
 
 public class HomeSection {

@@ -1,66 +1,190 @@
 package com.example.sound4you.ui.profile;
 
+import android.app.AlertDialog;
+import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.view.*;
+import android.widget.*;
 import android.os.Bundle;
-
+import androidx.annotation.*;
 import androidx.fragment.app.Fragment;
-
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import com.bumptech.glide.Glide;
+import com.example.sound4you.MainActivity;
 import com.example.sound4you.R;
+import com.example.sound4you.data.model.Track;
+import com.example.sound4you.data.model.User;
+import com.example.sound4you.presenter.like.LikePresenterImpl;
+import com.example.sound4you.presenter.profile.ProfilePresenterImpl;
+import com.example.sound4you.presenter.track.TrackPresenterImpl;
+import com.example.sound4you.ui.auth.AuthActivity;
+import com.example.sound4you.ui.follow.FollowerListFragment;
+import com.example.sound4you.ui.follow.FollowingListFragment;
+import com.example.sound4you.ui.follow.EditProfileFragment;
+import com.example.sound4you.ui.stream.LikeStreamView;
+import com.example.sound4you.ui.track.TrackView;
+import com.google.firebase.auth.FirebaseAuth;
+import java.util.List;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link ProfileFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
-public class ProfileFragment extends Fragment {
+public class ProfileFragment extends Fragment implements ProfileView, TrackView {
+    private ImageButton btnLogOut, btnEdit;
+    private ImageView ivAvatar;
+    private TextView tvName, tvBio, tvFollowers, tvFollowing;
+    private RecyclerView rvUploads;
+    private View uploadsHeader, likesHeader;
+    private LinearLayout followerContainer, followingContainer;
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
+    private ProfilePresenterImpl profilePresenter;
+    private TrackPresenterImpl trackPresenter;
+    private LikePresenterImpl likePresenter;
 
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+    private boolean isSelf;
+    private int userId;
+    private String firebaseUid;
 
-    public ProfileFragment() {
-        // Required empty public constructor
-    }
-
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment ProfileFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static ProfileFragment newInstance(String param1, String param2) {
-        ProfileFragment fragment = new ProfileFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
-
+    @Nullable
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        View v = inflater.inflate(R.layout.fragment_profile, container, false);
+
+        btnLogOut = v.findViewById(R.id.btnLogOut);
+        btnEdit = v.findViewById(R.id.btnEditProfile);
+        ivAvatar = v.findViewById(R.id.profilePicture);
+        tvName = v.findViewById(R.id.tvNameUser);
+        tvBio = v.findViewById(R.id.tvBioUser);
+        tvFollowers = v.findViewById(R.id.tvNumberFollowers);
+        tvFollowing = v.findViewById(R.id.tvNumberFollowing);
+        rvUploads = v.findViewById(R.id.rvUploadTracks);
+        uploadsHeader = v.findViewById(R.id.uploadTrackUserContainer);
+        likesHeader = v.findViewById(R.id.loveTrackUserContainer);
+        followerContainer = v.findViewById(R.id.followerContainer);
+        followingContainer = v.findViewById(R.id.followingContainer);
+
+        rvUploads.setLayoutManager(new LinearLayoutManager(getContext()));
+        firebaseUid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+
+        profilePresenter = new ProfilePresenterImpl(this);
+        trackPresenter = new TrackPresenterImpl(this);
+        likePresenter = new LikePresenterImpl(new LikeStreamView() {
+            @Override
+            public void onLikeChanged(boolean liked) {}
+            @Override
+            public void onLikeStatusChecked(boolean liked) {}
+            @Override
+            public void onTracksUpdated(List<Track> tracks) {
+                TrackAdapterUpload adapter = new TrackAdapterUpload(requireContext(), tracks, isSelf);
+                rvUploads.setAdapter(adapter);
+                adapter.notifyDataSetChanged();
+            }
+            @Override
+            public void onError(String msg) {}
+        });
+
+        if (getArguments() != null && getArguments().containsKey("userId")) {
+            userId = getArguments().getInt("userId");
+            isSelf = false;
+            profilePresenter.loadProfileById(userId);
+            trackPresenter.loadTracksByUserLimited(userId, 3);
+            btnEdit.setVisibility(View.GONE);
+            likesHeader.setVisibility(View.GONE);
+            requireActivity().findViewById(R.id.bottomNav).setVisibility(View.GONE);
+        } else {
+            isSelf = true;
+            profilePresenter.loadProfileByFirebase(firebaseUid);
+            btnEdit.setVisibility(View.VISIBLE);
         }
+
+        uploadsHeader.setOnClickListener(v1 -> navigate(UploadTrackListFragment.newInstance(userId, isSelf)));
+        likesHeader.setOnClickListener(v2 -> {
+            if (isSelf) navigate(LikedTrackListFragment.newInstance(firebaseUid));
+        });
+
+        btnEdit.setOnClickListener(v3 -> navigate(EditProfileFragment.newInstance()));
+
+        btnLogOut.setOnClickListener(v1 -> new AlertDialog.Builder(requireContext())
+                .setTitle("Đăng xuất")
+                .setMessage("Bạn có chắc muốn đăng xuất không?")
+                .setPositiveButton("Đăng xuất", (d, w) -> {
+                    FirebaseAuth.getInstance().signOut();
+                    SharedPreferences prefs = requireContext().getSharedPreferences("user_prefs", Context.MODE_PRIVATE);
+                    prefs.edit().clear().apply();
+                    Intent intent = new Intent(requireContext(), AuthActivity.class);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                    startActivity(intent);
+                    requireActivity().finish();
+                })
+                .setNegativeButton("Hủy", null)
+                .show());
+
+        followerContainer.setOnClickListener(v4 -> {
+            navigate(FollowerListFragment.newInstance());
+        });
+
+        followingContainer.setOnClickListener(v5 -> {
+            navigate(FollowingListFragment.newInstance());
+        });
+
+        return v;
+    }
+
+    private void navigate(Fragment f) {
+        requireActivity().getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.navHostFragment, f)
+                .addToBackStack(null)
+                .commit();
+    }
+
+    @Override public void showLoading() {}
+    @Override public void hideLoading() {}
+    @Override public void onError(String msg) {
+        Toast.makeText(requireContext(), msg, Toast.LENGTH_SHORT).show();
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_profile, container, false);
+    public void onProfileLoaded(User user) {
+        this.userId = user.getId();
+        tvName.setText(user.getUsername());
+        tvBio.setText(user.getBio());
+        tvFollowers.setText(String.valueOf(user.getFollowers()));
+        tvFollowing.setText(String.valueOf(user.getFollowing()));
+
+        Glide.with(this)
+                .load(user.getProfile_picture())
+                .placeholder(R.drawable.ic_avatar_placeholder)
+                .into(ivAvatar);
+
+        if (isSelf) trackPresenter.loadTracksByFirebaseLimited(firebaseUid, 3);
+    }
+
+    @Override
+    public void onTracksLoaded(List<Track> tracks) {
+        TrackAdapterUpload adapter = new TrackAdapterUpload(requireContext(), tracks, isSelf);
+
+        likePresenter.checkLikes(firebaseUid, tracks);
+
+        adapter.setOnItemClick(track -> {
+            if (getActivity() instanceof MainActivity)
+                ((MainActivity) getActivity()).showNowPlaying(track);
+        });
+
+        adapter.setOnLikeClick((track, liked) -> {
+            likePresenter.likeTrack(firebaseUid, track.getId(), liked);
+        });
+
+        rvUploads.setAdapter(adapter);
+    }
+
+    @Override
+    public void onProfileUpdated(User user) {
+        Toast.makeText(requireContext(), "Profile updated!", Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        requireActivity().findViewById(R.id.bottomNav).setVisibility(View.VISIBLE);
     }
 }

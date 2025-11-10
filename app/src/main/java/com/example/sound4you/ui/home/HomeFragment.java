@@ -1,38 +1,30 @@
 package com.example.sound4you.ui.home;
 
 import android.os.Bundle;
-
 import androidx.fragment.app.Fragment;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.LinearLayoutManager;
-
+import com.example.sound4you.MainActivity;
 import com.example.sound4you.data.model.HomeSection;
-import com.example.sound4you.data.model.Track;
 import com.example.sound4you.R;
-import com.example.sound4you.data.repository.TrackRepository;
-
-import java.util.ArrayList;
+import com.example.sound4you.presenter.home.HomePresenterImpl;
+import com.example.sound4you.ui.search.SearchFragment;
+import com.example.sound4you.ui.upload.UploadFragment;
 import java.util.List;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
-public class HomeFragment extends Fragment {
+public class HomeFragment extends Fragment implements HomeView {
 
     private RecyclerView rvHome;
-    private TrackRepository trackRepository;
+    private HomePresenterImpl presenter;
 
-    public HomeFragment() {
-        // Required empty public constructor
-    }
+    public HomeFragment() {}
 
     @Nullable
     @Override
@@ -42,37 +34,63 @@ public class HomeFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_home, container, false);
         rvHome = view.findViewById(R.id.rvHome);
         rvHome.setLayoutManager(new LinearLayoutManager(getContext()));
+        presenter = new HomePresenterImpl(this);
+        presenter.loadHomeSections();
 
-        trackRepository = new TrackRepository();
-        loadTracks();
+        ImageView ivUpload = view.findViewById(R.id.btnHomeUpload);
+        ImageView ivSearch = view.findViewById(R.id.btnHomeSearch);
+
+        ivUpload.setOnClickListener(v -> {
+            MainActivity activity = (MainActivity) requireActivity();
+            if (activity.isNowPlayingVisible()) {
+                activity.hideNowPlayingBar();
+            }
+
+            UploadFragment uploadFragment = new UploadFragment();
+            requireActivity().getSupportFragmentManager()
+                    .beginTransaction()
+                    .setCustomAnimations(
+                            R.anim.slide_in_right, R.anim.fade_out,
+                            R.anim.fade_in, R.anim.slide_out_right
+                    )
+                    .replace(R.id.navHostFragment, uploadFragment)
+                    .addToBackStack("Upload")
+                    .commit();
+        });
+
+        ivSearch.setOnClickListener(v -> {
+            MainActivity activity = (MainActivity) requireActivity();
+            if (activity.isNowPlayingVisible()) {
+                activity.hideNowPlayingBar();
+            }
+
+            SearchFragment searchFragment = new SearchFragment();
+            requireActivity().getSupportFragmentManager()
+                    .beginTransaction()
+                    .setCustomAnimations(
+                            R.anim.slide_in_right, R.anim.fade_out,
+                            R.anim.fade_in, R.anim.slide_out_right
+                    )
+                    .replace(R.id.navHostFragment, searchFragment)
+                    .addToBackStack("Search")
+                    .commit();
+        });
 
         return view;
     }
 
-    private void loadTracks () {
-        trackRepository.getAllTracks(new Callback<List<Track>>() {
-            @Override
-            public void onResponse(Call<List<Track>> call, Response<List<Track>> response) {
-                if (response.isSuccessful() && response.body() != null) {
-                    List<Track> trackList = response.body();
+    @Override
+    public void showLoading(boolean isLoading) {}
 
-                    List<HomeSection> sections = new ArrayList<>();
-                    sections.add(new HomeSection("You likes", trackList.subList(0, 4), 0));
-                    sections.add(new HomeSection("New Releases", trackList.subList(0, 6), 1));
-                    sections.add(new HomeSection("Top Hits", trackList.subList(0, 6), 1));
-                    sections.add(new HomeSection("You may like", trackList.subList(0, 6), 1));
+    @Override
+    public void showSections(List<HomeSection> sections) {
+        rvHome.setAdapter(new HomeAdapter(requireContext(), sections, track -> {
+            ((MainActivity) requireActivity()).showNowPlaying(track);
+        }));
+    }
 
-                    rvHome.setAdapter(new HomeAdapter(requireContext(), sections));
-                }
-                else {
-                    Toast.makeText(getContext(), "Lỗi không thể tải danh sách bài", Toast.LENGTH_SHORT).show();
-                }
-            }
-
-            @Override
-            public void onFailure(Call<List<Track>> call, Throwable t) {
-                Toast.makeText(requireContext(), "Lỗi mạng", Toast.LENGTH_SHORT).show();
-            }
-        });
+    @Override
+    public void showError(String message) {
+        Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show();
     }
 }

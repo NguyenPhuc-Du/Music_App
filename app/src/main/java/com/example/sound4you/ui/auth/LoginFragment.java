@@ -79,7 +79,6 @@ public class LoginFragment extends Fragment implements AuthView{
 
     @Override
     public void onSuccess (String message) {
-        Toast.makeText(getContext(), message, Toast.LENGTH_SHORT).show();
         if (message.equals("admin")) {
 //            startActivity(new Intent(getContext(), AdminActivity.class));
 //            requireActivity().finish();

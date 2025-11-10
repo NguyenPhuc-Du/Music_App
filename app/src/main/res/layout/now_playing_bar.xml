@@ -1,119 +1,110 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/nowPlayingBar"
     android:layout_width="match_parent"
-    android:layout_height="60dp"
-    app:cardCornerRadius="16dp"
-    app:cardElevation="4dp"
-    app:cardBackgroundColor="@android:color/transparent"
-    android:foreground="?attr/selectableItemBackground"
-    android:clickable="true"
-    android:focusable="true">
+    android:layout_height="match_parent"
+    android:background="@drawable/gradient_overlay_now_playing"
+    android:paddingStart="10dp"
+    android:paddingEnd="10dp">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@drawable/gradient_overlay_now_playing"
-        android:paddingStart="10dp"
-        android:paddingEnd="10dp">
+    <!--ProgressBar-->
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/playContainer"
+        android:layout_width="44dp"
+        android:layout_height="44dp"
+        app:cardCornerRadius="22dp"
+        app:cardBackgroundColor="#FFFFFFFF"
+        app:cardElevation="2dp"
+        android:foreground="?attr/selectableItemBackgroundBorderless"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent">
 
-<!--ProgressBar-->
-        <com.google.android.material.card.MaterialCardView
-            android:id="@+id/playContainer"
-            android:layout_width="44dp"
-            android:layout_height="44dp"
-            app:cardCornerRadius="22dp"
-            app:cardBackgroundColor="#FFFFFFFF"
-            app:cardElevation="2dp"
-            android:foreground="?attr/selectableItemBackgroundBorderless"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent">
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
 
-            <FrameLayout
+            <ProgressBar
+                android:id="@+id/progressCircle"
+                style="?android:attr/progressBarStyleHorizontal"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:padding="4dp">
+                android:indeterminate="false"
+                android:max="100"
+                android:progress="0"
+                android:progressDrawable="@drawable/process_circle_bar" />
 
-                <ProgressBar
-                    android:id="@+id/progressCircle"
-                    style="?android:attr/progressBarStyleHorizontal"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:indeterminate="false"
-                    android:max="100"
-                    android:progress="0"
-                    android:progressDrawable="@drawable/process_circle_bar" />
+            <ImageButton
+                android:id="@+id/btnPlayPause"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_gravity="center"
+                android:background="@android:color/transparent"
+                android:src="@drawable/ic_play"
+                app:tint="@color/black"
+                android:contentDescription="Play/Pause"/>
+        </FrameLayout>
+    </com.google.android.material.card.MaterialCardView>
 
-<!--Play and Pause Button-->
-                <ImageButton
-                    android:id="@+id/btnPlayPause"
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"
-                    android:layout_gravity="center"
-                    android:background="@android:color/transparent"
-                    android:src="@drawable/ic_play"
-                    android:contentDescription="Play/Pause"/>
-            </FrameLayout>
-        </com.google.android.material.card.MaterialCardView>
+    <!-- Track title -->
+    <LinearLayout
+        android:id="@+id/trackDetailsContainer"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="center_vertical"
+        android:paddingStart="10dp"
+        android:paddingEnd="10dp"
+        app:layout_constraintStart_toEndOf="@id/playContainer"
+        app:layout_constraintEnd_toStartOf="@+id/btnFollowNowPlaying"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent">
 
-
-<!--        Track title and source-->
-        <LinearLayout
-            android:id="@+id/trackDetailsContainer"
-            android:layout_width="0dp"
+        <TextView
+            android:id="@+id/tvTrackTitleNowPlaying"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:gravity="center_vertical"
-            android:paddingStart="10dp"
-            android:paddingEnd="10dp"
-            app:layout_constraintStart_toEndOf="@id/playContainer"
-            app:layout_constraintEnd_toStartOf="@+id/btnFollowNowPlaying"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent">
+            android:textColor="#FFFFFF"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            android:maxLines="1"
+            android:ellipsize="end"/>
 
-            <TextView
-                android:id="@+id/tvTrackTitleNowPlaying"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textColor="#FFFFFF"
-                android:textSize="14sp"
-                android:textStyle="bold"
-                android:maxLines="1"
-                android:ellipsize="end"/>
+        <TextView
+            android:id="@+id/tvTrackSourceNowPlaying"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="#EEEEEE"
+            android:textSize="12sp"
+            android:maxLines="1"
+            android:ellipsize="end"/>
+    </LinearLayout>
 
-            <TextView
-                android:id="@+id/tvTrackSourceNowPlaying"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textColor="#EEEEEE"
-                android:textSize="12sp"
-                android:maxLines="1"
-                android:ellipsize="end"/>
-        </LinearLayout>
+    <ImageButton
+        android:id="@+id/btnFollowNowPlaying"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:src="@drawable/ic_follow"
+        app:layout_constraintEnd_toStartOf="@+id/btnLikeNowPlaying"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:tint="@color/black"
+        android:layout_marginEnd="8dp"
+        android:focusable="true"
+        android:clickable="true"/>
 
-<!--        Follow button-->
-        <ImageButton
-            android:id="@+id/btnFollowNowPlaying"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            android:src="@drawable/ic_follow"
-            app:layout_constraintEnd_toStartOf="@+id/btnLikeNowPlaying"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            android:layout_marginEnd="8dp"/>
+    <ImageButton
+        android:id="@+id/btnLikeNowPlaying"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:src="@drawable/ic_like"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:focusable="true"
+        android:clickable="true"/>
 
-<!--        Like button-->
-        <ImageButton
-            android:id="@+id/btnLikeNowPlaying"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            android:src="@drawable/ic_like"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"/>
-    </androidx.constraintlayout.widget.ConstraintLayout>
-</com.google.android.material.card.MaterialCardView>
+</androidx.constraintlayout.widget.ConstraintLayout>

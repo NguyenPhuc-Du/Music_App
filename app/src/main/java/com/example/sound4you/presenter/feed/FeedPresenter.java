@@ -1,4 +1,5 @@
 package com.example.sound4you.presenter.feed;
 
-public class FeedPresenter {
+public interface FeedPresenter {
+    void loadPublicFeed();
 }

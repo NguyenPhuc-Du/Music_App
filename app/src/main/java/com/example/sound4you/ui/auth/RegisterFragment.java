@@ -17,6 +17,7 @@ import android.view.ViewGroup;
 import com.example.sound4you.MainActivity;
 import com.example.sound4you.R;
 import com.example.sound4you.presenter.auth.RegisterPresenterImpl;
+import static com.example.sound4you.utils.Validator.isStrongPassword;
 
 public class RegisterFragment extends Fragment implements AuthView{
     private EditText emailEditText;
@@ -55,6 +56,11 @@ public class RegisterFragment extends Fragment implements AuthView{
 
             if (username.isEmpty() || email.isEmpty() || password.isEmpty() || code.isEmpty()) {
                 Toast.makeText(getContext(), "Vui lòng điền đầy đủ thông tin!", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            if (isStrongPassword(password)) {
+                Toast.makeText(getContext(), "Mật khẩu phải có ít nhất 6 ký tự, bao gồm chữ hoa, chữ thường và số", Toast.LENGTH_SHORT).show();
                 return;
             }
 

@@ -1,5 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+
+    <color name="accent_orange">#FF7A00</color>
+    <color name="purple_500">#9C27B0</color>
+    <color name="red_follow">#E53935</color>
+
+    <color name="gray_dark">#333333</color>
+    <color name="gray_light">#7C7C7C</color>
+    <color name="gray_background">#141414</color>
+    <color name="gray_stroke">#525252</color>
+
+    <color name="success_green">#4CAF50</color>
+    <color name="error_red">#F44336</color>
+    <color name="warning_yellow">#FF9800</color>
+
 </resources>

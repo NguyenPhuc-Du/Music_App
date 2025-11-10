@@ -1,5 +1,7 @@
 package com.example.sound4you.ui.auth;
 
+import static com.example.sound4you.utils.Validator.isStrongPassword;
+
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -9,7 +11,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ProgressBar;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -24,7 +25,6 @@ public class PasswordForgettingFragment extends Fragment implements AuthView{
     private EditText newPasswordInput;
     private Button sendCodeButton;
     private Button resetPasswordButton;
-    private ProgressBar progressBar;
 
     private PasswordForgettingPresenterImpl presenter;
 
@@ -44,11 +44,14 @@ public class PasswordForgettingFragment extends Fragment implements AuthView{
         sendCodeButton = view.findViewById(R.id.btntakeKeyForgotPassword);
         resetPasswordButton = view.findViewById(R.id.btnResetPassword);
 
-        progressBar = new ProgressBar(requireContext());
-
         presenter = new PasswordForgettingPresenterImpl(this, requireContext());
         sendCodeButton.setOnClickListener(r -> {
             String email = emailInput.getText().toString();
+            if (email.isEmpty()) {
+                onError("Vui lòng nhập email");
+                return;
+            }
+
             presenter.sendVerificationCode(email);
         });
 
@@ -56,6 +59,16 @@ public class PasswordForgettingFragment extends Fragment implements AuthView{
             String email = emailInput.getText().toString();
             String code = codeInput.getText().toString();
             String newPassword = newPasswordInput.getText().toString();
+            if (email.isEmpty() || code.isEmpty() || newPassword.isEmpty()) {
+                onError("Vui lòng nhập đầy đủ thông tin");
+                return;
+            }
+
+            if (isStrongPassword(newPassword)) {
+                Toast.makeText(getContext(), "Mật khẩu phải có ít nhất 6 ký tự, bao gồm chữ hoa, chữ thường và số", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
             presenter.resetPassword(email, code, newPassword);
         });
 
@@ -63,19 +76,14 @@ public class PasswordForgettingFragment extends Fragment implements AuthView{
     }
 
     @Override
-    public void showLoading() {
-        progressBar.setVisibility(View.VISIBLE);
-    }
+    public void showLoading() {}
 
     @Override
-    public void hideLoading() {
-        progressBar.setVisibility(View.GONE);
-    }
+    public void hideLoading() {}
 
     @Override
     public void onSuccess(String message) {
-        Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show();
-        startActivity(new Intent(requireContext(), LoginFragment.class));
+        startActivity(new Intent(requireContext(), AuthActivity.class));
         requireActivity().finish();
     }
 

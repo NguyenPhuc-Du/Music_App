@@ -1,66 +1,161 @@
 package com.example.sound4you.ui.upload;
 
+import android.app.Activity;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
-
+import android.provider.MediaStore;
+import android.view.*;
+import android.widget.*;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.*;
 import androidx.fragment.app.Fragment;
-
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-
+import androidx.navigation.fragment.NavHostFragment;
+import com.bumptech.glide.Glide;
 import com.example.sound4you.R;
+import com.example.sound4you.presenter.upload.UploadPresenterImpl;
+import com.google.firebase.auth.FirebaseAuth;
+import com.example.sound4you.presenter.genre.GenrePresenterImpl;
+import com.example.sound4you.ui.genre.GenreView;
+import com.example.sound4you.data.model.Genre;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link UploadFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
-public class UploadFragment extends Fragment {
+import java.util.ArrayList;
+import java.util.List;
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
+public class UploadFragment extends Fragment implements UploadView {
 
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+    private Uri musicUri, coverUri;
+    private ImageView imgCover;
+    private EditText edtTitle;
+    private TextView tvGenre;
+    private Button btnSave;
+    private UploadPresenterImpl presenter;
 
-    public UploadFragment() {
-        // Required empty public constructor
+    private GenrePresenterImpl genrePresenter;
+    private List<Genre> genres = new ArrayList<>();
+    private Genre selectedGenre = null;
+
+    private final ActivityResultLauncher<Intent> pickMusicLauncher =
+            registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
+                if (result.getResultCode() == Activity.RESULT_OK && result.getData() != null && result.getData().getData() != null) {
+                    musicUri = result.getData().getData();
+                    Toast.makeText(requireContext(), "Đã chọn bài nhạc!", Toast.LENGTH_SHORT).show();
+                    showUploadForm();
+                } else {
+                    NavHostFragment.findNavController(UploadFragment.this).navigateUp();
+                }
+            });
+
+    private final ActivityResultLauncher<Intent> pickImageLauncher =
+            registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
+                if (result.getResultCode() == Activity.RESULT_OK && result.getData() != null && result.getData().getData() != null) {
+                    coverUri = result.getData().getData();
+                    Glide.with(this).load(coverUri).into(imgCover);
+                }
+            });
+
+    @Nullable
+    @Override
+    public View onCreateView(@NonNull LayoutInflater inflater,
+                             @Nullable ViewGroup container,
+                             @Nullable Bundle savedInstanceState) {
+        View v = inflater.inflate(R.layout.fragment_upload, container, false);
+
+        presenter = new com.example.sound4you.presenter.upload.UploadPresenterImpl(requireContext(), this);
+        imgCover = v.findViewById(R.id.imgCoverUpload);
+        edtTitle = v.findViewById(R.id.edtTrackTitle);
+        tvGenre = v.findViewById(R.id.tvTrackGenre);
+        btnSave = v.findViewById(R.id.btnSaveTrackDetailsUpload);
+
+        genrePresenter = new GenrePresenterImpl(new GenreView() {
+            @Override
+            public void onGenresLoaded(List<Genre> loaded) {
+                genres.clear();
+                if (loaded != null) genres.addAll(loaded);
+            }
+
+            @Override
+            public void onGenreError(String error) {
+                Toast.makeText(requireContext(), error, Toast.LENGTH_SHORT).show();
+            }
+        });
+        genrePresenter.loadGenres();
+
+        tvGenre.setOnClickListener(vv -> {
+            if (genres.isEmpty()) {
+                Toast.makeText(requireContext(), "Đang tải danh sách thể loại...", Toast.LENGTH_SHORT).show();
+                genrePresenter.loadGenres();
+                return;
+            }
+            showGenreDialog();
+        });
+
+        Intent pickIntent = new Intent(Intent.ACTION_GET_CONTENT);
+        pickIntent.setType("audio/*");
+        pickMusicLauncher.launch(Intent.createChooser(pickIntent, "Chọn file nhạc"));
+
+        if (getActivity() instanceof com.example.sound4you.MainActivity) {
+            ((com.example.sound4you.MainActivity) getActivity()).hideBottomNav();
+        }
+
+        imgCover.setOnClickListener(v1 -> {
+            Intent pickImg = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+            pickImageLauncher.launch(pickImg);
+        });
+
+        btnSave.setOnClickListener(v2 -> {
+            String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+            String title = edtTitle.getText().toString().trim();
+            String genre = selectedGenre != null ? selectedGenre.getTitle() : "";
+
+            if (musicUri == null) {
+                Toast.makeText(requireContext(), "Vui lòng chọn bài nhạc!", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            presenter.uploadTrack(uid, title, genre, musicUri, coverUri);
+        });
+
+        return v;
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment UploadFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static UploadFragment newInstance(String param1, String param2) {
-        UploadFragment fragment = new UploadFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
+    private void showUploadForm() {
+        View vw = getView();
+        if (vw != null) vw.findViewById(R.id.trackDetailsUploadContainer).setVisibility(View.VISIBLE);
+    }
+
+    private void showGenreDialog() {
+        String[] names = new String[genres.size()];
+        for (int i = 0; i < genres.size(); i++) names[i] = genres.get(i).getTitle();
+
+        new android.app.AlertDialog.Builder(requireContext())
+                .setTitle("Chọn thể loại")
+                .setItems(names, (dialog, which) -> {
+                    selectedGenre = genres.get(which);
+                    tvGenre.setText(selectedGenre.getTitle());
+                })
+                .setNegativeButton("Hủy", null)
+                .show();
     }
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
+    public void onUploadSuccess(String message) {
+        Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show();
+        // return to previous screen after successful upload
+        NavHostFragment.findNavController(UploadFragment.this).navigateUp();
+    }
+
+    @Override
+    public void onUploadError(String error) {
+        Toast.makeText(requireContext(), error, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        if (getActivity() instanceof com.example.sound4you.MainActivity) {
+            ((com.example.sound4you.MainActivity) getActivity()).showBottomNav();
         }
     }
 
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_upload, container, false);
-    }
 }

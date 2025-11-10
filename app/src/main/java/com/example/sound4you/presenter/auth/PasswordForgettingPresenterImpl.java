@@ -32,10 +32,7 @@ public class PasswordForgettingPresenterImpl implements PasswordForgettingPresen
             @Override
             public void onResponse(Call<Map<String, String>> call, Response<Map<String, String>> response) {
                 authView.hideLoading();
-                if (response.isSuccessful()) {
-                    authView.onSuccess("Mã xác minh đã được gửi đến email của bạn.");
-                }
-                else {
+                if (!response.isSuccessful()) {
                     authView.onError("Gửi mã xác minh thất bại! Vui lòng thử lại.");
                 }
             }

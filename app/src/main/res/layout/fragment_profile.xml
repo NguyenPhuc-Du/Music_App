@@ -24,6 +24,20 @@
             android:gravity="center"
             android:padding="20dp">
 
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <ImageButton
+                    android:id="@+id/btnLogOut"
+                    android:layout_width="28dp"
+                    android:layout_height="28dp"
+                    android:src="@drawable/ic_logout"
+                    android:background="@android:color/transparent"
+                    app:tint="@color/white"
+                    android:layout_gravity="top|end"/>
+            </FrameLayout>
+
             <!-- Avatar -->
             <com.google.android.material.imageview.ShapeableImageView
                 android:id="@+id/profilePicture"
@@ -86,7 +100,7 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintBottom_toBottomOf="parent"
-                    android:layout_marginStart="80dp">
+                    android:layout_marginStart="70dp">
 
                     <TextView
                         android:id="@+id/tvNumberFollowers"
@@ -118,7 +132,7 @@
                     app:layout_constraintStart_toEndOf="@id/followerContainer"
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintBottom_toBottomOf="parent"
-                    android:layout_marginStart="50dp">
+                    android:layout_marginStart="55dp">
 
                     <TextView
                         android:id="@+id/tvNumberFollowing"
@@ -157,8 +171,7 @@
             android:id="@+id/trackUserContainer"
             android:orientation="vertical"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:padding="10dp">
+            android:layout_height="wrap_content">
 
             <!-- Upload -->
             <androidx.constraintlayout.widget.ConstraintLayout
@@ -167,7 +180,9 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="10dp"
                 android:clickable="true"
-                android:focusable="true">
+                android:focusable="true"
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="10dp">
 
                 <TextView
                     android:id="@+id/tvUploadTrackTitle"
@@ -180,7 +195,7 @@
                     android:fontFamily="sans-serif"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintBottom_toBottomOf="parent" />
+                    app:layout_constraintBottom_toBottomOf="parent"/>
 
                 <TextView
                     android:id="@+id/tvUploadTrackExpand"
@@ -199,49 +214,18 @@
                 android:id="@+id/rvUploadTracks"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingHorizontal="16dp"
                 android:clipToPadding="false"
                 android:visibility="visible"
-                tools:listitem="@layout/item_card_love" />
-
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/trackListUserContainer"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="10dp"
-                android:clickable="true"
-                android:focusable="true">
-                <TextView
-                    android:id="@+id/tvTrackListTitle"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Track List"
-                    android:textColor="@color/white"
-                    android:textSize="20sp"
-                    android:textStyle="bold"
-                    android:fontFamily="sans-serif"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"/>
-                <TextView android:id="@+id/tvTrackListExpand"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text=">>>"
-                    android:textColor="@color/white"
-                    android:textSize="20sp"
-                    android:textStyle="bold"
-                    android:fontFamily="sans-serif"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"/>
-            </androidx.constraintlayout.widget.ConstraintLayout>
+                tools:listitem="@layout/item_card_love"/>
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/loveTrackUserContainer"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:clickable="true"
-                android:focusable="true">
+                android:focusable="true"
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="10dp">
                 <TextView
                     android:id="@+id/tvLoveTrackTitle"
                     android:layout_width="wrap_content"

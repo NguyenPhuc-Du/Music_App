@@ -1,33 +1,42 @@
 package com.example.sound4you.data.model;
 
-import java.io.Serializable;
-
-public class Track implements Serializable {
+public class Track {
     private int id;
-    private int user_id;
-    private int is_verified;
+    private int userID;
+    private int genreID;
     private String artist;
-    private String artistProfilePicture;
     private String title;
-    private String audio_url;
-    private String cover_url;
+    private String audioURL;
+    private String coverURL;
+    private int view;
+    private int delete;
+    private String createdAt;
+    private int duration;
 
-    public Track(int id, int user_id, String artist, String artistProfilePicture, String title, String audio_url, String cover_url) {
+    public Track(int id, int userID, String artist, int genreID, String title, String audioURL, String coverURL, int view, int delete, String createdAt, int duration) {
         this.id = id;
-        this.user_id = id;
+        this.userID = userID;
+        this.genreID = genreID;
         this.artist = artist;
-        this.artistProfilePicture = artistProfilePicture;
         this.title = title;
-        this.audio_url = audio_url;
-        this.cover_url = cover_url;
+        this.audioURL = audioURL;
+        this.coverURL = coverURL;
+        this.view = view;
+        this.delete = delete;
+        this.createdAt = createdAt;
+        this.duration = duration;
     }
 
-    public int getId() {
+    public int getID() {
         return id;
     }
 
-    public int getUser_id() {
-        return user_id;
+    public int getUserID() {
+        return userID;
+    }
+
+    public int getGenreID() {
+        return genreID;
     }
 
     public String getArtist() {
@@ -38,19 +47,79 @@ public class Track implements Serializable {
         return title;
     }
 
-    public String getCover_url() {
-        return cover_url;
+    public String getAudioURL() {
+        return audioURL;
+    }
+
+    public String getCoverURL() {
+        return coverURL;
+    }
+
+    public int getView() {
+        return view;
+    }
+
+    public int getDelete() {
+        return delete;
+    }
+
+    public String getCreatedAt() {
+        return createdAt;
+    }
+
+    public int getDuration() {
+        return duration;
+    }
+
+    public void setID(int id) {
+        this.id = id;
+    }
+
+    public void setUserID(int userID) {
+        this.userID = userID;
+    }
+
+    public void setGenreID(int genreID) {
+        this.genreID = genreID;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public void setAudioURL(String audioURL) {
+        this.audioURL = audioURL;
+    }
+
+    public void setCoverURL(String coverURL) {
+        this.coverURL = coverURL;
+    }
+
+    public void setView(int view) {
+        this.view = view;
+    }
+
+    public void setDelete(int delete) {
+        this.delete = delete;
+    }
+
+    public void setCreatedAt(String createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public void setDuration(int duration) {
+        this.duration = duration;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public int getUser_id() {
+        return userID;
     }
 
     public String getAudio_url() {
-        return audio_url;
-    }
-
-    public String getArtistProfilePicture() {
-        return artistProfilePicture;
-    }
-
-    public int getIs_verified() {
-        return is_verified;
+        return audioURL;
     }
 }

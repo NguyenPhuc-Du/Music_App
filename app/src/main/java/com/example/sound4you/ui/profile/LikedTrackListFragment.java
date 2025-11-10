@@ -1,0 +1,105 @@
+package com.example.sound4you.ui.profile;
+
+import android.os.Bundle;
+import android.view.*;
+import android.widget.Toast;
+import androidx.annotation.*;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import com.example.sound4you.MainActivity;
+import com.example.sound4you.R;
+import com.example.sound4you.data.model.Track;
+import com.example.sound4you.presenter.like.LikePresenterImpl;
+import com.example.sound4you.ui.stream.LikeStreamView;
+import com.example.sound4you.presenter.track.TrackPresenterImpl;
+import com.example.sound4you.ui.track.TrackView;
+import com.google.firebase.auth.FirebaseAuth;
+import java.util.List;
+
+public class LikedTrackListFragment extends Fragment implements TrackView {
+
+    private static final String ARG_FIREBASE = "firebaseUid";
+
+    public static LikedTrackListFragment newInstance(String firebaseUid) {
+        Bundle b = new Bundle();
+        b.putString(ARG_FIREBASE, firebaseUid);
+        LikedTrackListFragment f = new LikedTrackListFragment();
+        f.setArguments(b);
+        return f;
+    }
+
+    private RecyclerView recyclerView;
+    private TrackPresenterImpl trackPresenter;
+    private LikePresenterImpl likePresenter;
+    private String firebaseUid;
+
+    // make adapter a field so we can refresh it from like callback
+    private TrackAdapterLike adapter;
+
+    @Nullable
+    @Override
+    public View onCreateView(@NonNull LayoutInflater inflater,
+                             @Nullable ViewGroup container,
+                             @Nullable Bundle savedInstanceState) {
+        View v = inflater.inflate(R.layout.fragment_liked_track_list, container, false);
+        recyclerView = v.findViewById(R.id.rvCommon);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+
+        if (getActivity() instanceof com.example.sound4you.MainActivity) {
+            ((com.example.sound4you.MainActivity) getActivity()).hideBottomNav();
+        }
+
+        trackPresenter = new TrackPresenterImpl(this);
+        firebaseUid = getArguments() != null ? getArguments().getString(ARG_FIREBASE)
+                : FirebaseAuth.getInstance().getUid();
+
+        likePresenter = new LikePresenterImpl(new LikeStreamView() {
+            @Override public void onLikeChanged(boolean liked) {}
+            @Override public void onLikeStatusChecked(boolean liked) {}
+            @Override
+            public void onTracksUpdated(List<Track> tracks) {
+                if (adapter != null) adapter.notifyDataSetChanged();
+            }
+            @Override public void onError(String msg) {
+                Toast.makeText(requireContext(), msg, Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        trackPresenter.loadLikedTracks(firebaseUid);
+        return v;
+    }
+
+    @Override
+    public void onTracksLoaded(List<Track> tracks) {
+        adapter = new TrackAdapterLike(requireContext(), tracks);
+
+        likePresenter.checkLikes(firebaseUid, tracks);
+
+        adapter.setOnItemClick(track -> {
+            if (getActivity() instanceof MainActivity)
+                ((MainActivity) getActivity()).showNowPlaying(track);
+        });
+
+        adapter.setOnLikeClick((track, liked) -> {
+            likePresenter.likeTrack(firebaseUid, track.getId(), liked);
+        });
+
+        recyclerView.setAdapter(adapter);
+    }
+
+    @Override public void showLoading() {}
+    @Override public void hideLoading() {}
+    @Override
+    public void onError(String msg) {
+        Toast.makeText(requireContext(), msg, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        if (getActivity() instanceof com.example.sound4you.MainActivity) {
+            ((com.example.sound4you.MainActivity) getActivity()).showBottomNav();
+        }
+    }
+}
