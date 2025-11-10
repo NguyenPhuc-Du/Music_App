@@ -8,6 +8,7 @@ public class User {
     private String firebaseUid;
     private String profile_picture;
     private String bio;
+    private int role;
     private int followers;
     private int following;
 
@@ -72,5 +73,9 @@ public class User {
 
     public void setProfile_picture(String profile_picture) {
         this.profile_picture = profile_picture;
+    }
+
+    public int getRole() {
+        return role;
     }
 }

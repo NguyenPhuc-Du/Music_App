@@ -100,13 +100,13 @@ public class ManageTrackFragment extends Fragment implements ItemClickListener {
 
                         TrackItem uiItem = new TrackItem(
                                 apiTrack.getId(),
-                                apiTrack.getUser_id(),
+                                apiTrack.getUserId(),
                                 apiTrack.getArtist(),
                                 apiTrack.getArtistProfilePicture(),
                                 apiTrack.getTitle(),
-                                apiTrack.getAudio_url(),
-                                apiTrack.getCover_url(),
-                                apiTrack.getIs_verified()
+                                apiTrack.getAudioUrl(),
+                                apiTrack.getCoverUrl(),
+                                apiTrack.getIsVerified()
                         );
                         System.out.println("Check: " + uiItem.getTitle());
                         trackItemList.add(uiItem);

@@ -4,6 +4,7 @@ import android.media.AudioAttributes;
 import android.media.MediaPlayer;
 import android.os.Build;
 import android.util.Log;
+
 import java.io.IOException;
 
 public class MediaPlayerManager {
@@ -11,114 +12,99 @@ public class MediaPlayerManager {
     private static MediaPlayerManager instance;
     private MediaPlayer mediaPlayer;
     private boolean isPrepared = false;
-    private String currentUrl = null;
 
     private MediaPlayerManager() {}
 
     public static synchronized MediaPlayerManager getInstance() {
-        if (instance == null) {
-            instance = new MediaPlayerManager();
-        }
+        if (instance == null) instance = new MediaPlayerManager();
         return instance;
     }
 
     public void play(String url, Runnable onPrepared) {
         if (url == null || url.isEmpty()) {
-            Log.w(TAG, "play() called with null/empty url");
+            Log.w(TAG, "play() called with null or empty URL");
             return;
         }
 
+        Log.d(TAG, "play() URL = " + url);
+
+        release();
+        mediaPlayer = new MediaPlayer();
+        isPrepared = false;
+
         try {
-            if (mediaPlayer != null && isPrepared && url.equals(currentUrl)) {
-                if (!mediaPlayer.isPlaying()) mediaPlayer.start();
-                if (onPrepared != null) onPrepared.run();
-                return;
-            }
-
-            release();
-            mediaPlayer = new MediaPlayer();
-            currentUrl = url;
-            isPrepared = false;
-
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                mediaPlayer.setAudioAttributes(new AudioAttributes.Builder()
-                        .setUsage(AudioAttributes.USAGE_MEDIA)
-                        .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
-                        .build());
+                mediaPlayer.setAudioAttributes(
+                        new AudioAttributes.Builder()
+                                .setUsage(AudioAttributes.USAGE_MEDIA)
+                                .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
+                                .build()
+                );
             } else {
                 mediaPlayer.setAudioStreamType(android.media.AudioManager.STREAM_MUSIC);
             }
 
-            mediaPlayer.setLooping(false);
-
             mediaPlayer.setOnPreparedListener(mp -> {
                 isPrepared = true;
-                try {
-                    mp.start();
-                    if (onPrepared != null) onPrepared.run();
-                } catch (IllegalStateException e) {
-                    Log.e(TAG, "Error starting player", e);
-                }
+                mp.start();
+                Log.d(TAG, "MediaPlayer prepared & started");
+                if (onPrepared != null) onPrepared.run();
             });
 
             mediaPlayer.setOnErrorListener((mp, what, extra) -> {
-                Log.e(TAG, "MediaPlayer error: what=" + what + ", extra=" + extra);
+                Log.e(TAG, "MediaPlayer error: what=" + what + ", extra=" + extra + ", url=" + url);
                 isPrepared = false;
-                new Thread(() -> {
-                    try {
-                        Thread.sleep(1000);
-                        play(url, onPrepared);
-                    } catch (InterruptedException ignored) {}
-                }).start();
                 return true;
+            });
+
+            mediaPlayer.setOnCompletionListener(mp -> {
+                Log.d(TAG, "Playback completed");
             });
 
             mediaPlayer.setDataSource(url);
             mediaPlayer.prepareAsync();
+            Log.d(TAG, "prepareAsync() called");
 
         } catch (IOException e) {
             Log.e(TAG, "IOException: " + e.getMessage());
         } catch (Exception e) {
-            Log.e(TAG, "Error preparing player: " + e.getMessage());
+            Log.e(TAG, "Unexpected error: " + e.getMessage());
         }
     }
 
-    /** Dừng hoặc tiếp tục phát */
     public void toggle() {
         if (mediaPlayer == null) return;
         try {
-            if (mediaPlayer.isPlaying()) mediaPlayer.pause();
-            else if (isPrepared) mediaPlayer.start();
+            if (mediaPlayer.isPlaying()) {
+                mediaPlayer.pause();
+                Log.d(TAG, "Paused");
+            } else if (isPrepared) {
+                mediaPlayer.start();
+                Log.d(TAG, "Resumed");
+            }
         } catch (IllegalStateException e) {
-            Log.e(TAG, "toggle failed", e);
+            Log.e(TAG, "toggle() invalid state", e);
         }
     }
 
     public boolean isPlaying() {
-        return mediaPlayer != null && mediaPlayer.isPlaying();
-    }
-
-    public int getCurrentPosition() {
-        if (mediaPlayer != null && isPrepared) {
-            try { return mediaPlayer.getCurrentPosition(); }
-            catch (IllegalStateException ignored) {}
+        try {
+            return mediaPlayer != null && mediaPlayer.isPlaying();
+        } catch (IllegalStateException e) {
+            return false;
         }
-        return 0;
     }
 
     public int getDuration() {
-        if (mediaPlayer != null && isPrepared) {
-            try { return mediaPlayer.getDuration(); }
-            catch (IllegalStateException ignored) {}
-        }
-        return 0;
+        try {
+            return (mediaPlayer != null && isPrepared) ? mediaPlayer.getDuration() : 0;
+        } catch (Exception e) { return 0; }
     }
 
-    public void seekTo(int positionMs) {
-        if (mediaPlayer != null && isPrepared) {
-            try { mediaPlayer.seekTo(positionMs); }
-            catch (IllegalStateException ignored) {}
-        }
+    public int getCurrentPosition() {
+        try {
+            return (mediaPlayer != null && isPrepared) ? mediaPlayer.getCurrentPosition() : 0;
+        } catch (Exception e) { return 0; }
     }
 
     public void release() {
@@ -126,10 +112,10 @@ public class MediaPlayerManager {
             try {
                 mediaPlayer.stop();
                 mediaPlayer.release();
+                Log.d(TAG, "MediaPlayer released");
             } catch (Exception ignored) {}
             mediaPlayer = null;
         }
         isPrepared = false;
-        currentUrl = null;
     }
 }

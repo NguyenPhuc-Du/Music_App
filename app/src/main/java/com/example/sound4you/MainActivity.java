@@ -29,7 +29,6 @@ import com.example.sound4you.ui.stream.FollowStreamView;
 import com.example.sound4you.ui.profile.UploadTrackListFragment;
 import com.example.sound4you.ui.profile.LikedTrackListFragment;
 import com.example.sound4you.ui.upload.UploadFragment;
-
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 
@@ -55,7 +54,7 @@ public class MainActivity extends AppCompatActivity implements NowPlayingBar.OnN
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        // NavHost
+        // Navigation setup
         NavHostFragment navHostFragment =
                 (NavHostFragment) getSupportFragmentManager().findFragmentById(R.id.navHostFragment);
         if (navHostFragment != null)
@@ -80,6 +79,7 @@ public class MainActivity extends AppCompatActivity implements NowPlayingBar.OnN
             nowPlayingBar = includeNowPlaying.findViewById(R.id.nowPlayingBar);
             if (nowPlayingBar != null) nowPlayingBar.setOnNowPlayingActionListener(this);
         }
+
         mediaPlayerManager = MediaPlayerManager.getInstance();
 
         if (nowPlayingBar != null) {
@@ -103,7 +103,7 @@ public class MainActivity extends AppCompatActivity implements NowPlayingBar.OnN
             });
         }
 
-        // Xử lý nút Back chung
+        // Nút Back chung
         getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
             @Override
             public void handleOnBackPressed() {
@@ -126,17 +126,21 @@ public class MainActivity extends AppCompatActivity implements NowPlayingBar.OnN
         if (f instanceof NavHostFragment) {
             if (navController != null && navController.getCurrentDestination() != null) {
                 int destId = navController.getCurrentDestination().getId();
-                if (destId == R.id.uploadFragment) {
-                    hide = true;
-                }
+                if (destId == R.id.uploadFragment) hide = true;
             }
         } else if (f != null) {
-            if (f instanceof UploadTrackListFragment || f instanceof LikedTrackListFragment || f instanceof UploadFragment || f instanceof StreamTrackFragment || f instanceof FollowerListFragment || f instanceof FollowingListFragment) {
+            if (f instanceof UploadTrackListFragment
+                    || f instanceof LikedTrackListFragment
+                    || f instanceof UploadFragment
+                    || f instanceof StreamTrackFragment
+                    || f instanceof FollowerListFragment
+                    || f instanceof FollowingListFragment) {
                 hide = true;
             }
         }
 
-        if (bottomNavigationView != null) bottomNavigationView.setVisibility(hide ? View.GONE : View.VISIBLE);
+        if (bottomNavigationView != null)
+            bottomNavigationView.setVisibility(hide ? View.GONE : View.VISIBLE);
     }
 
     public void hideBottomNav() {
@@ -149,17 +153,13 @@ public class MainActivity extends AppCompatActivity implements NowPlayingBar.OnN
 
     public void showNowPlaying(Track track) {
         if (track == null) return;
-
-        if (includeNowPlaying == null || nowPlayingBar == null) {
-            return;
-        }
+        if (includeNowPlaying == null || nowPlayingBar == null) return;
 
         String firebaseUid = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
         LikePresenterImpl likePresenter = new LikePresenterImpl(new LikeStreamView() {
             @Override
-            public void onLikeChanged(boolean liked) {
-            }
+            public void onLikeChanged(boolean liked) {}
 
             @Override
             public void onLikeStatusChecked(boolean liked) {
@@ -171,37 +171,28 @@ public class MainActivity extends AppCompatActivity implements NowPlayingBar.OnN
                 }
             }
 
-            @Override
-            public void onTracksUpdated(List<Track> tracks) {}
-
-            @Override
-            public void onError(String msg) {
-            }
-
+            @Override public void onTracksUpdated(List<Track> tracks) {}
+            @Override public void onError(String msg) {}
         });
 
         FollowPresenterImpl followPresenter = new FollowPresenterImpl(new FollowStreamView() {
-            @Override
-            public void onFollowChanged(boolean following) {
-            }
-
+            @Override public void onFollowChanged(boolean following) {}
             @Override
             public void onFollowStatusChecked(boolean followed) {
                 isFollowing = followed;
                 ImageButton btnFollow = nowPlayingBar.getFollowButton();
-                if (btnFollow != null) btnFollow.setImageResource(followed ? R.drawable.ic_followed : R.drawable.ic_follow);
+                if (btnFollow != null)
+                    btnFollow.setImageResource(followed ? R.drawable.ic_followed : R.drawable.ic_follow);
             }
-
-            @Override
-            public void onError(String msg) {
-            }
+            @Override public void onError(String msg) {}
         });
 
         likePresenter.checkLiked(firebaseUid, track.getId());
-        followPresenter.checkFollowed(firebaseUid, track.getUser_id());
+        followPresenter.checkFollowed(firebaseUid, track.getUserId());
 
         this.currentTrack = track;
         nowPlayingBar.updateTrackInfo(track);
+
         includeNowPlaying.setVisibility(View.VISIBLE);
         includeNowPlaying.setAlpha(0f);
         includeNowPlaying.animate()
@@ -212,13 +203,18 @@ public class MainActivity extends AppCompatActivity implements NowPlayingBar.OnN
 
         isNowPlayingVisible = true;
 
-        mediaPlayerManager.play(track.getAudio_url(), () -> {
+        String audioUrl = track.getAudioUrl();
+        if (audioUrl.contains("/upload/") && !audioUrl.contains("/api/upload/")) {
+            audioUrl = audioUrl.replace("/upload/", "/api/upload/");
+        }
+        mediaPlayerManager.play(audioUrl, () -> {
             if (nowPlayingBar != null) nowPlayingBar.setPlaying(true);
         });
     }
 
     public void hideNowPlayingBar() {
-        if (isNowPlayingVisible && includeNowPlaying != null && includeNowPlaying.getVisibility() == View.VISIBLE) {
+        if (isNowPlayingVisible && includeNowPlaying != null
+                && includeNowPlaying.getVisibility() == View.VISIBLE) {
             includeNowPlaying.animate()
                     .translationY(includeNowPlaying.getHeight())
                     .alpha(0f)
@@ -229,7 +225,8 @@ public class MainActivity extends AppCompatActivity implements NowPlayingBar.OnN
     }
 
     public void restoreNowPlayingBar() {
-        if (isNowPlayingVisible && includeNowPlaying != null && includeNowPlaying.getVisibility() == View.GONE) {
+        if (isNowPlayingVisible && includeNowPlaying != null
+                && includeNowPlaying.getVisibility() == View.GONE) {
             includeNowPlaying.setVisibility(View.VISIBLE);
             includeNowPlaying.setAlpha(0f);
             includeNowPlaying.animate()
@@ -244,7 +241,6 @@ public class MainActivity extends AppCompatActivity implements NowPlayingBar.OnN
         return isNowPlayingVisible;
     }
 
-    // Nút Play/Pause
     @Override
     public void onPlayPauseClicked() {
         if (currentTrack == null) {
@@ -252,10 +248,10 @@ public class MainActivity extends AppCompatActivity implements NowPlayingBar.OnN
             return;
         }
         mediaPlayerManager.toggle();
-        if (nowPlayingBar != null) nowPlayingBar.setPlaying(mediaPlayerManager.isPlaying());
+        if (nowPlayingBar != null)
+            nowPlayingBar.setPlaying(mediaPlayerManager.isPlaying());
     }
 
-    // Nút Like
     @Override
     public void onLikeClicked() {
         if (currentTrack == null) {
@@ -265,38 +261,28 @@ public class MainActivity extends AppCompatActivity implements NowPlayingBar.OnN
 
         isLiked = !isLiked;
         ImageButton btnLike = nowPlayingBar != null ? nowPlayingBar.getLikeButton() : null;
-        if (btnLike != null) btnLike.setImageResource(R.drawable.ic_like);
         int color = isLiked ? Color.parseColor("#FF7A00") : Color.BLACK;
         if (btnLike != null) btnLike.setImageTintList(ColorStateList.valueOf(color));
 
         String firebaseUid = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
         LikePresenterImpl likePresenter = new LikePresenterImpl(new LikeStreamView() {
-            @Override
-            public void onLikeChanged(boolean liked) {
-                isLiked = liked;
-            }
-
-            @Override
-            public void onLikeStatusChecked(boolean liked) {
-            }
-
-            @Override
-            public void onTracksUpdated(List<Track> tracks) {}
-
+            @Override public void onLikeChanged(boolean liked) { isLiked = liked; }
+            @Override public void onLikeStatusChecked(boolean liked) {}
+            @Override public void onTracksUpdated(List<Track> tracks) {}
             @Override
             public void onError(String msg) {
                 isLiked = !isLiked;
-                if (btnLike != null) btnLike.setImageResource(R.drawable.ic_like);
-                int color = isLiked ? Color.parseColor("#FF7A00") : Color.BLACK;
-                if (btnLike != null) btnLike.setImageTintList(ColorStateList.valueOf(color));
+                if (btnLike != null)
+                    btnLike.setImageTintList(ColorStateList.valueOf(isLiked ? Color.parseColor("#FF7A00") : Color.BLACK));
                 Toast.makeText(MainActivity.this, msg, Toast.LENGTH_SHORT).show();
             }
         });
-        if (firebaseUid != null) likePresenter.likeTrack(firebaseUid, currentTrack.getId(), !isLiked);
+
+        if (firebaseUid != null)
+            likePresenter.likeTrack(firebaseUid, currentTrack.getId(), !isLiked);
     }
 
-    // Nút Follow
     @Override
     public void onFollowClicked() {
         if (currentTrack == null) {
@@ -305,38 +291,37 @@ public class MainActivity extends AppCompatActivity implements NowPlayingBar.OnN
         }
 
         String firebaseUid = null;
-        if (FirebaseAuth.getInstance().getCurrentUser() != null) firebaseUid = FirebaseAuth.getInstance().getCurrentUser().getUid();
-        int userId = currentTrack.getUser_id();
+        if (FirebaseAuth.getInstance().getCurrentUser() != null)
+            firebaseUid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+
+        int userId = currentTrack.getUserId();
         FollowPresenterImpl followPresenter = new FollowPresenterImpl(new FollowStreamView() {
             @Override
             public void onFollowChanged(boolean following) {
                 isFollowing = following;
                 ImageButton btnFollow = nowPlayingBar != null ? nowPlayingBar.getFollowButton() : null;
-                if (btnFollow != null) btnFollow.setImageResource(following ? R.drawable.ic_followed : R.drawable.ic_follow);
+                if (btnFollow != null)
+                    btnFollow.setImageResource(following ? R.drawable.ic_followed : R.drawable.ic_follow);
             }
-
-            @Override
-            public void onFollowStatusChecked(boolean followed) {
-            }
-
-            @Override
-            public void onError(String msg) {
+            @Override public void onFollowStatusChecked(boolean followed) {}
+            @Override public void onError(String msg) {
                 Toast.makeText(MainActivity.this, msg, Toast.LENGTH_SHORT).show();
             }
         });
-        if (firebaseUid != null) followPresenter.followUser(firebaseUid, userId, isFollowing);
+
+        if (firebaseUid != null)
+            followPresenter.followUser(firebaseUid, userId, isFollowing);
     }
 
-    // Cập nhật tiến trình nhạc
     private void startProgressBar() {
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
                 if (mediaPlayerManager != null && mediaPlayerManager.isPlaying()) {
                     int duration = mediaPlayerManager.getDuration();
-                    if (duration > 0) {
+                    if (duration > 0 && nowPlayingBar != null) {
                         int progress = mediaPlayerManager.getCurrentPosition() * 100 / duration;
-                        if (nowPlayingBar != null) nowPlayingBar.updateProcess(progress);
+                        nowPlayingBar.updateProcess(progress);
                     }
                 }
                 handler.postDelayed(this, 300);

@@ -39,7 +39,7 @@ public class FeedFollowingAdapter extends RecyclerView.Adapter<FeedFollowingAdap
         viewHolder.tvUserName.setText(track.getArtist());
 
         Glide.with(context)
-                .load(track.getCover_url())
+                .load(track.getCoverUrl())
                 .into(viewHolder.ivCover);
 
         Glide.with(context)

@@ -1,125 +1,79 @@
 package com.example.sound4you.data.model;
 
-public class Track {
+import com.google.gson.annotations.SerializedName;
+import java.io.Serializable;
+
+public class Track implements Serializable {
     private int id;
-    private int userID;
-    private int genreID;
+
+    @SerializedName("user_id")
+    private int userId;
+
+    @SerializedName("genre_id")
+    private int genreId;
+
     private String artist;
+
+    @SerializedName("artistProfilePicture")
+    private String artistProfilePicture;
+
+    @SerializedName("is_verified")
+    private int isVerified;
+
+    private boolean liked;
     private String title;
-    private String audioURL;
-    private String coverURL;
-    private int view;
-    private int delete;
+
+    @SerializedName("audio_url")
+    private String audioUrl;
+
+    @SerializedName("cover_url")
+    private String coverUrl;
+
+    @SerializedName("is_deleted")
+    private int isDeleted;
+
+    @SerializedName("created_at")
     private String createdAt;
+
     private int duration;
 
-    public Track(int id, int userID, String artist, int genreID, String title, String audioURL, String coverURL, int view, int delete, String createdAt, int duration) {
-        this.id = id;
-        this.userID = userID;
-        this.genreID = genreID;
-        this.artist = artist;
-        this.title = title;
-        this.audioURL = audioURL;
-        this.coverURL = coverURL;
-        this.view = view;
-        this.delete = delete;
-        this.createdAt = createdAt;
-        this.duration = duration;
-    }
+    // --- Getter & Setter ---
+    public int getId() { return id; }
+    public void setId(int id) { this.id = id; }
 
-    public int getID() {
-        return id;
-    }
+    public int getUserId() { return userId; }
+    public void setUserId(int userId) { this.userId = userId; }
 
-    public int getUserID() {
-        return userID;
-    }
+    public int getGenreId() { return genreId; }
+    public void setGenreId(int genreId) { this.genreId = genreId; }
 
-    public int getGenreID() {
-        return genreID;
-    }
+    public String getArtist() { return artist; }
+    public void setArtist(String artist) { this.artist = artist; }
 
-    public String getArtist() {
-        return artist;
-    }
+    public String getArtistProfilePicture() { return artistProfilePicture; }
+    public void setArtistProfilePicture(String artistProfilePicture) { this.artistProfilePicture = artistProfilePicture; }
 
-    public String getTitle() {
-        return title;
-    }
+    public int getIsVerified() { return isVerified; }
+    public void setIsVerified(int isVerified) { this.isVerified = isVerified; }
 
-    public String getAudioURL() {
-        return audioURL;
-    }
+    public boolean isLiked() { return liked; }
+    public void setLiked(boolean liked) { this.liked = liked; }
 
-    public String getCoverURL() {
-        return coverURL;
-    }
+    public String getTitle() { return title; }
+    public void setTitle(String title) { this.title = title; }
 
-    public int getView() {
-        return view;
-    }
+    public String getAudioUrl() { return audioUrl; }
+    public void setAudioUrl(String audioUrl) { this.audioUrl = audioUrl; }
 
-    public int getDelete() {
-        return delete;
-    }
+    public String getCoverUrl() { return coverUrl; }
+    public void setCoverUrl(String coverUrl) { this.coverUrl = coverUrl; }
 
-    public String getCreatedAt() {
-        return createdAt;
-    }
+    public int getIsDeleted() { return isDeleted; }
+    public void setIsDeleted(int isDeleted) { this.isDeleted = isDeleted; }
 
-    public int getDuration() {
-        return duration;
-    }
+    public String getCreatedAt() { return createdAt; }
+    public void setCreatedAt(String createdAt) { this.createdAt = createdAt; }
 
-    public void setID(int id) {
-        this.id = id;
-    }
-
-    public void setUserID(int userID) {
-        this.userID = userID;
-    }
-
-    public void setGenreID(int genreID) {
-        this.genreID = genreID;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public void setAudioURL(String audioURL) {
-        this.audioURL = audioURL;
-    }
-
-    public void setCoverURL(String coverURL) {
-        this.coverURL = coverURL;
-    }
-
-    public void setView(int view) {
-        this.view = view;
-    }
-
-    public void setDelete(int delete) {
-        this.delete = delete;
-    }
-
-    public void setCreatedAt(String createdAt) {
-        this.createdAt = createdAt;
-    }
-
-    public void setDuration(int duration) {
-        this.duration = duration;
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public int getUser_id() {
-        return userID;
-    }
-
-    public String getAudio_url() {
-        return audioURL;
-    }
+    public int getDuration() { return duration; }
+    public void setDuration(int duration) { this.duration = duration; }
 }

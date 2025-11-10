@@ -44,7 +44,7 @@ public class TrackAdapterLike extends RecyclerView.Adapter<TrackAdapterLike.VH> 
         h.artist.setText(track.getArtist());
 
         Glide.with(context)
-                .load(track.getCover_url())
+                .load(track.getCoverUrl())
                 .placeholder(R.drawable.ic_music_placeholder)
                 .into(h.cover);
 

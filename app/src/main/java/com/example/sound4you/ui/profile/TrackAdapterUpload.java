@@ -53,7 +53,7 @@ public class TrackAdapterUpload extends RecyclerView.Adapter<TrackAdapterUpload.
         h.artist.setText(track.getArtist());
 
         Glide.with(context)
-                .load(track.getCover_url())
+                .load(track.getCoverUrl())
                 .placeholder(R.drawable.ic_music_placeholder)
                 .into(h.cover);
 

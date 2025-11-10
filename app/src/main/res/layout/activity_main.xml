@@ -37,7 +37,7 @@
         android:layout_height="60dp"
         android:background="#292929"
         android:elevation="5dp"
-        app:menu="@menu/menu_bottom_nav"
+        app:menu="@menu/menu_bottom_user_nav"
         app:labelVisibilityMode="unlabeled"
         app:itemIconTint="@color/nav_item_color"
         app:itemRippleColor="@color/nav_item_ripple"

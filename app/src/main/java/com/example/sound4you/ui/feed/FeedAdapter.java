@@ -44,7 +44,7 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.FeedViewHolder
         holder.tvUserName.setText(track.getArtist());
 
         Glide.with(context)
-                .load(track.getCover_url())
+                .load(track.getCoverUrl())
                 .placeholder(R.drawable.ic_music_placeholder)
                 .error(R.drawable.ic_music_placeholder)
                 .into(holder.ivCover);

@@ -80,7 +80,7 @@ public class StreamTrackFragment extends Fragment{
                 tvArtist.setText(currentTrack.getArtist());
 
                 Glide.with(requireContext())
-                        .load(currentTrack.getCover_url())
+                        .load(currentTrack.getCoverUrl())
                         .placeholder(R.drawable.ic_music_placeholder)
                         .error(R.drawable.ic_music_placeholder)
                         .centerCrop()
