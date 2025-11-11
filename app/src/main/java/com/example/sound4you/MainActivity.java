@@ -17,8 +17,10 @@ import androidx.activity.OnBackPressedCallback;
 import androidx.fragment.app.Fragment;
 
 import com.example.sound4you.data.model.Track;
+import com.example.sound4you.ui.profile.EditProfileFragment;
 import com.example.sound4you.ui.follow.FollowerListFragment;
 import com.example.sound4you.ui.follow.FollowingListFragment;
+import com.example.sound4you.ui.profile.ProfileFragment;
 import com.example.sound4you.ui.search.SearchFragment;
 import com.example.sound4you.ui.stream.NowPlayingBar;
 import com.example.sound4you.ui.stream.StreamTrackFragment;
@@ -136,7 +138,9 @@ public class MainActivity extends AppCompatActivity implements NowPlayingBar.OnN
                     || f instanceof StreamTrackFragment
                     || f instanceof FollowerListFragment
                     || f instanceof FollowingListFragment
-                    || f instanceof SearchFragment) {
+                    || f instanceof SearchFragment
+                    || f instanceof EditProfileFragment
+                    || f instanceof ProfileFragment) {
                 hide = true;
             }
         }
@@ -187,6 +191,10 @@ public class MainActivity extends AppCompatActivity implements NowPlayingBar.OnN
                     btnFollow.setImageResource(followed ? R.drawable.ic_followed : R.drawable.ic_follow);
             }
             @Override public void onError(String msg) {}
+
+            @Override
+            public void onFollowCountLoaded(int followers, int following) {
+            }
         });
 
         likePresenter.checkLiked(firebaseUid, track.getId());
@@ -309,6 +317,11 @@ public class MainActivity extends AppCompatActivity implements NowPlayingBar.OnN
             @Override public void onError(String msg) {
                 Toast.makeText(MainActivity.this, msg, Toast.LENGTH_SHORT).show();
             }
+
+            @Override
+            public void onFollowCountLoaded(int followers, int following) {
+
+            }
         });
 
         if (firebaseUid != null)
@@ -324,6 +337,10 @@ public class MainActivity extends AppCompatActivity implements NowPlayingBar.OnN
                     if (duration > 0 && nowPlayingBar != null) {
                         int progress = mediaPlayerManager.getCurrentPosition() * 100 / duration;
                         nowPlayingBar.updateProcess(progress);
+
+                        if (progress == 100) {
+                            nowPlayingBar.setPlaying(false);
+                        }
                     }
                 }
                 handler.postDelayed(this, 300);

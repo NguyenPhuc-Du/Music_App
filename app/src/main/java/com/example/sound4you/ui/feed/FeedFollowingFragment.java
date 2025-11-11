@@ -28,7 +28,6 @@ public class FeedFollowingFragment extends Fragment implements FeedView{
     private String firebaseId;
 
     public FeedFollowingFragment() {
-        // Required empty public constructor
     }
 
     @Override

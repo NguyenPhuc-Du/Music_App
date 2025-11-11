@@ -198,28 +198,6 @@ public class SearchFragment extends Fragment implements SearchView, GenreView{
     @Override
     public void showUsers(List<User> users) {
         SearchAdapterUser adapter = new SearchAdapterUser(requireContext(), users);
-        String firebaseUid = FirebaseAuth.getInstance().getCurrentUser().getUid();
-
-        adapter.setONFollowClick(user -> {
-            FollowPresenterImpl followPresenter = new FollowPresenterImpl(new FollowStreamView() {
-                @Override
-                public void onFollowChanged(boolean following) {
-                    Toast.makeText(requireContext(), following ? "Đã theo dõi " + user.getUsername() : "Đã bỏ theo dõi " + user.getUsername(), Toast.LENGTH_SHORT).show();
-                }
-
-                @Override
-                public void onFollowStatusChecked(boolean followed) {
-                    isFollowed = followed;
-                }
-
-                @Override
-                public void onError(String msg) {
-                    Toast.makeText(requireContext(), msg, Toast.LENGTH_SHORT).show();
-                }
-            });
-
-            followPresenter.checkFollowed(firebaseUid, user.getId());
-        });
 
         adapter.setOnUserClick(user -> {
             Bundle bundle = new Bundle();
@@ -230,7 +208,8 @@ public class SearchFragment extends Fragment implements SearchView, GenreView{
 
             requireActivity().getSupportFragmentManager()
                     .beginTransaction()
-                    .setCustomAnimations(R.anim.slide_in_right, R.anim.fade_out, R.anim.fade_in, R.anim.slide_out_right)
+                    .setCustomAnimations(R.anim.slide_in_right, R.anim.fade_out,
+                            R.anim.fade_in, R.anim.slide_out_right)
                     .replace(R.id.navHostFragment, fragment)
                     .addToBackStack(null)
                     .commit();

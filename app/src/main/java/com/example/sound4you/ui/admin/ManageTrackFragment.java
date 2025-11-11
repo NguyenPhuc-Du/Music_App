@@ -58,7 +58,6 @@ public class ManageTrackFragment extends Fragment implements ManageTrackView {
             });
             recyclerView.setAdapter(adapter);
         } else {
-            // replace data by reflection: adapter was created with the list, but to keep it simple, recreate adapter
             adapter = new ManageTrackAdapter(tracks, new ManageTrackAdapter.TrackActionListener() {
                 @Override
                 public void onApproveClicked(int trackId) { presenter.approveTrack(trackId); }

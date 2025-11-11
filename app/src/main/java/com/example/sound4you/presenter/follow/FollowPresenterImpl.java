@@ -62,7 +62,7 @@ public class FollowPresenterImpl implements FollowPresenter {
             public void onResponse(Call<Map<String, Boolean>> call, Response<Map<String, Boolean>> response) {
                 if (response.isSuccessful() && response.body() != null) {
                     boolean following = response.body().get("following");
-                    streamView.onFollowChanged(following);
+                    streamView.onFollowStatusChecked(following);
                 }
                 else {
                     streamView.onError("Không nhận được phản hồi từ máy chủ");
@@ -114,4 +114,37 @@ public class FollowPresenterImpl implements FollowPresenter {
             }
         });
     }
+
+    public void loadFollowCounts(String firebaseUid) {
+        followRepository.countFollowers(firebaseUid, new Callback<Map<String, Integer>>() {
+            @Override
+            public void onResponse(Call<Map<String, Integer>> call, Response<Map<String, Integer>> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    Integer followers = response.body().get("followers");
+                    streamView.onFollowCountLoaded(followers != null ? followers : 0, -1);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Map<String, Integer>> call, Throwable t) {
+                streamView.onFollowCountLoaded(0, -1);
+            }
+        });
+
+        followRepository.countFollowing(firebaseUid, new Callback<Map<String, Integer>>() {
+            @Override
+            public void onResponse(Call<Map<String, Integer>> call, Response<Map<String, Integer>> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    Integer following = response.body().get("following");
+                    streamView.onFollowCountLoaded(-1, following != null ? following : 0);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Map<String, Integer>> call, Throwable t) {
+                streamView.onFollowCountLoaded(-1, 0);
+            }
+        });
+    }
+
 }

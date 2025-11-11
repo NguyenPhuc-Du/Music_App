@@ -64,7 +64,7 @@ public class PasswordForgettingFragment extends Fragment implements AuthView{
                 return;
             }
 
-            if (isStrongPassword(newPassword)) {
+            if (!isStrongPassword(newPassword)) {
                 Toast.makeText(getContext(), "Mật khẩu phải có ít nhất 6 ký tự, bao gồm chữ hoa, chữ thường và số", Toast.LENGTH_SHORT).show();
                 return;
             }

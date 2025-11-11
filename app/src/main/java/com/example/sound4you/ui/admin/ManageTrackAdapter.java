@@ -45,22 +45,23 @@ public class ManageTrackAdapter extends RecyclerView.Adapter<ManageTrackAdapter.
 
         String avatarUrl = track.getCoverUrl();
 
-        if (avatarUrl == null || avatarUrl.trim().isEmpty() || "NULL".equalsIgnoreCase(avatarUrl)) {
-            Glide.with(holder.itemView.getContext())
-                    .load(R.drawable.ic_logo)
-                    .into(holder.imgMusicResId);
-        } else {
-            Glide.with(holder.itemView.getContext())
-                    .load(avatarUrl)
-                    .placeholder(R.drawable.ic_logo)
-                    .error(R.drawable.ic_logo)
-                    .into(holder.imgMusicResId);
-        }
+        Glide.with(holder.itemView.getContext())
+                .load(avatarUrl)
+                .placeholder(R.drawable.ic_logo)
+                .error(R.drawable.ic_logo)
+                .into(holder.imgMusicResId);
 
         holder.songNameTitle.setText(track.getTitle() != null ? track.getTitle() : "Unknown");
         holder.singerNameTitle.setText(track.getArtist() != null ? track.getArtist() : "Unknown");
         String status = track.getIsVerified() == 1 ? "Approved" : "Pending";
         holder.status.setText(status);
+
+        if (track.getIsVerified() == 1) {
+            holder.approveBtn.setVisibility(View.GONE);
+        }
+        else {
+            holder.approveBtn.setVisibility(View.VISIBLE);
+        }
 
         holder.approveBtn.setOnClickListener(v -> {
             if (listener != null && track != null) listener.onApproveClicked(track.getId());

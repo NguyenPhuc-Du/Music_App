@@ -6,7 +6,7 @@ import com.example.sound4you.data.model.User;
 import com.example.sound4you.data.model.StatisticsResponse;
 import com.example.sound4you.data.model.PendingCountResponse;
 import com.example.sound4you.data.model.ApprovedCountResponse;
-import com.example.sound4you.UserCountResponse;
+import com.example.sound4you.data.model.UserCountResponse;
 import com.example.sound4you.utils.ApiClient;
 
 import java.util.List;

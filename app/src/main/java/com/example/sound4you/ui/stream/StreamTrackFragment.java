@@ -36,8 +36,6 @@ public class StreamTrackFragment extends Fragment{
     private FrameLayout playPause;
     private MediaPlayerManager playerManager;
     private Handler handler = new Handler();
-    private String firebaseId;
-    private LikePresenterImpl likePresenter;
 
     private NowPlayingBar nowPlayingBar;
 
@@ -66,7 +64,6 @@ public class StreamTrackFragment extends Fragment{
         ivArtistAvatar = view.findViewById(R.id.ivTrackUserAvatarStream);
         playPause = view.findViewById(R.id.gradientOverlayStream);
 
-        firebaseId = FirebaseAuth.getInstance().getCurrentUser().getUid();
         playerManager = MediaPlayerManager.getInstance();
 
         if (!playerManager.isPlaying()) {

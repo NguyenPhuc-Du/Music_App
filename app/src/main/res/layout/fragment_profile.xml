@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fillViewport="true"
-    android:background="#141414"
+    android:background="@color/black"
     tools:context=".ui.profile.ProfileFragment">
 
     <LinearLayout
@@ -61,7 +61,7 @@
                     android:id="@+id/tvNameUser"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Nguyen Phuc"
+                    android:text="User"
                     android:textColor="@color/white"
                     android:textSize="24sp"
                     android:textStyle="bold"
@@ -83,6 +83,19 @@
                     app:layout_constraintBottom_toBottomOf="@id/tvNameUser"
                     android:layout_marginStart="8dp" />
             </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <Button
+                android:id="@+id/btnFollowUser"
+                android:layout_width="120dp"
+                android:layout_height="40dp"
+                android:layout_marginTop="8dp"
+                android:text="Follow"
+                android:textSize="14sp"
+                android:textAllCaps="false"
+                android:backgroundTint="@color/accent_orange"
+                android:textColor="@android:color/white"
+                android:layout_gravity="center_horizontal"
+                android:visibility="gone"/>
 
             <!-- Follower / Following -->
             <androidx.constraintlayout.widget.ConstraintLayout

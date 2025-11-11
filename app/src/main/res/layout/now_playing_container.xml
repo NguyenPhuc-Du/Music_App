@@ -4,17 +4,16 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/cardNowPlaying"
     android:layout_width="match_parent"
-    android:layout_height="60dp"
-    android:layout_margin="10dp"
-    app:cardCornerRadius="16dp"
-    app:cardElevation="6dp"
-    app:cardBackgroundColor="@android:color/transparent"
-    android:foreground="?attr/selectableItemBackground">
+    android:layout_height="70dp"
+    app:cardCornerRadius="18dp"
+    app:cardElevation="8dp"
+    app:cardBackgroundColor="#1E1E1E"
+    android:foreground="?attr/selectableItemBackground"
+    android:clickable="true"
+    android:focusable="true">
 
     <com.example.sound4you.ui.stream.NowPlayingBar
         android:id="@+id/nowPlayingBar"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:clickable="true"
-        android:focusable="true"/>
+        android:layout_height="match_parent"/>
 </com.google.android.material.card.MaterialCardView>

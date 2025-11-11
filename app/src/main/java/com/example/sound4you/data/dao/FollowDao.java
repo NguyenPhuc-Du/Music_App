@@ -20,4 +20,11 @@ public interface FollowDao {
 
     @POST("api/follow/followers")
     Call<List<User>> getFollowersByFirebase(@Body Map<String, Object> body);
+
+    @POST("api/follow/countFollowers")
+    Call<Map<String, Integer>> countFollowers(@Body Map<String, Object> body);
+
+    @POST("api/follow/countFollowing")
+    Call<Map<String, Integer>> countFollowing(@Body Map<String, Object> body);
+
 }

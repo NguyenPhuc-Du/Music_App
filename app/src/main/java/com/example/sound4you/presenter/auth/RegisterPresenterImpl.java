@@ -63,7 +63,7 @@ public class RegisterPresenterImpl implements RegisterPresenter {
                                     @Override
                                     public void onResponse(Call<Map<String, String>> call, Response<Map<String, String>> response) {
                                         authView.hideLoading();
-                                        if (!response.isSuccessful()) {
+                                        if (response.isSuccessful()) {
                                             authView.onSuccess("Đăng ký thành công!");
                                         } else {
                                             authView.onError("Lỗi lưu thông tin lên server!");

@@ -39,4 +39,16 @@ public class FollowRepository {
         data.put("firebaseUid", firebaseUid);
         followDao.getFollowingByFirebase(data).enqueue(callback);
     }
+
+    public void countFollowers(String firebaseUid, Callback<Map<String, Integer>> callback) {
+        Map<String, Object> body = new HashMap<>();
+        body.put("firebaseUid", firebaseUid);
+        followDao.countFollowers(body).enqueue(callback);
+    }
+
+    public void countFollowing(String firebaseUid, Callback<Map<String, Integer>> callback) {
+        Map<String, Object> body = new HashMap<>();
+        body.put("firebaseUid", firebaseUid);
+        followDao.countFollowing(body).enqueue(callback);
+    }
 }

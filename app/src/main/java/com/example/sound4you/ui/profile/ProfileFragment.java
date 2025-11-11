@@ -8,6 +8,7 @@ import android.view.*;
 import android.widget.*;
 import android.os.Bundle;
 import androidx.annotation.*;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -16,33 +17,44 @@ import com.example.sound4you.MainActivity;
 import com.example.sound4you.R;
 import com.example.sound4you.data.model.Track;
 import com.example.sound4you.data.model.User;
+import com.example.sound4you.presenter.follow.FollowPresenterImpl;
 import com.example.sound4you.presenter.like.LikePresenterImpl;
 import com.example.sound4you.presenter.profile.ProfilePresenterImpl;
 import com.example.sound4you.presenter.track.TrackPresenterImpl;
 import com.example.sound4you.ui.auth.AuthActivity;
 import com.example.sound4you.ui.follow.FollowerListFragment;
 import com.example.sound4you.ui.follow.FollowingListFragment;
-import com.example.sound4you.ui.follow.EditProfileFragment;
 import com.example.sound4you.ui.stream.LikeStreamView;
+import com.example.sound4you.ui.stream.FollowStreamView;
 import com.example.sound4you.ui.track.TrackView;
 import com.google.firebase.auth.FirebaseAuth;
 import java.util.List;
 
-public class ProfileFragment extends Fragment implements ProfileView, TrackView {
+public class ProfileFragment extends Fragment implements ProfileView, TrackView, FollowStreamView {
     private ImageButton btnLogOut, btnEdit;
     private ImageView ivAvatar;
     private TextView tvName, tvBio, tvFollowers, tvFollowing;
     private RecyclerView rvUploads;
     private View uploadsHeader, likesHeader;
     private LinearLayout followerContainer, followingContainer;
+    private Button btnFollowUser;
 
     private ProfilePresenterImpl profilePresenter;
     private TrackPresenterImpl trackPresenter;
     private LikePresenterImpl likePresenter;
+    private FollowPresenterImpl followPresenter;
 
     private boolean isSelf;
     private int userId;
     private String firebaseUid;
+
+    public static ProfileFragment newInstanceWithUserId(int userId) {
+        ProfileFragment f = new ProfileFragment();
+        Bundle args = new Bundle();
+        args.putInt("userId", userId);
+        f.setArguments(args);
+        return f;
+    }
 
     @Nullable
     @Override
@@ -61,49 +73,56 @@ public class ProfileFragment extends Fragment implements ProfileView, TrackView 
         likesHeader = v.findViewById(R.id.loveTrackUserContainer);
         followerContainer = v.findViewById(R.id.followerContainer);
         followingContainer = v.findViewById(R.id.followingContainer);
+        btnFollowUser = v.findViewById(R.id.btnFollowUser);
 
         rvUploads.setLayoutManager(new LinearLayoutManager(getContext()));
         firebaseUid = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
         profilePresenter = new ProfilePresenterImpl(this);
         trackPresenter = new TrackPresenterImpl(this);
+        followPresenter = new FollowPresenterImpl(this);
         likePresenter = new LikePresenterImpl(new LikeStreamView() {
-            @Override
-            public void onLikeChanged(boolean liked) {}
-            @Override
-            public void onLikeStatusChecked(boolean liked) {}
-            @Override
-            public void onTracksUpdated(List<Track> tracks) {
+            @Override public void onLikeChanged(boolean liked) {}
+            @Override public void onLikeStatusChecked(boolean liked) {}
+            @Override public void onTracksUpdated(List<Track> tracks) {
                 TrackAdapterUpload adapter = new TrackAdapterUpload(requireContext(), tracks, isSelf);
                 rvUploads.setAdapter(adapter);
                 adapter.notifyDataSetChanged();
             }
-            @Override
-            public void onError(String msg) {}
+            @Override public void onError(String msg) {}
         });
 
         if (getArguments() != null && getArguments().containsKey("userId")) {
             userId = getArguments().getInt("userId");
             isSelf = false;
-            profilePresenter.loadProfileById(userId);
-            trackPresenter.loadTracksByUserLimited(userId, 3);
+
             btnEdit.setVisibility(View.GONE);
             likesHeader.setVisibility(View.GONE);
+            btnLogOut.setVisibility(View.GONE);
+            btnFollowUser.setVisibility(View.VISIBLE);
 
-            if (getActivity() instanceof com.example.sound4you.MainActivity) {
-                ((com.example.sound4you.MainActivity) getActivity()).hideBottomNav();
-            }
-        } else {
+            profilePresenter.loadProfileById(userId);
+            trackPresenter.loadTracksByUserLimited(userId, 3);
+            followPresenter.checkFollowed(firebaseUid, userId);
+
+            btnFollowUser.setOnClickListener(v1 -> {
+                boolean isFollowed = btnFollowUser.getText().toString().equals("Followed");
+                followPresenter.followUser(firebaseUid, userId, !isFollowed);
+                updateFollowButton(!isFollowed);
+            });
+        }
+        else {
             isSelf = true;
             profilePresenter.loadProfileByFirebase(firebaseUid);
             btnEdit.setVisibility(View.VISIBLE);
+            btnFollowUser.setVisibility(View.GONE);
+            followPresenter.loadFollowCounts(firebaseUid);
         }
 
         uploadsHeader.setOnClickListener(v1 -> navigate(UploadTrackListFragment.newInstance(userId, isSelf)));
         likesHeader.setOnClickListener(v2 -> {
             if (isSelf) navigate(LikedTrackListFragment.newInstance(firebaseUid));
         });
-
         btnEdit.setOnClickListener(v3 -> navigate(EditProfileFragment.newInstance()));
 
         btnLogOut.setOnClickListener(v1 -> new AlertDialog.Builder(requireContext())
@@ -111,13 +130,10 @@ public class ProfileFragment extends Fragment implements ProfileView, TrackView 
                 .setMessage("Bạn có chắc muốn đăng xuất không?")
                 .setPositiveButton("Đăng xuất", (d, w) -> {
                     FirebaseAuth.getInstance().signOut();
-
-                    // Clear both preference stores used by auth flows to avoid automatic re-login
                     SharedPreferences prefs1 = requireContext().getSharedPreferences("user_prefs", Context.MODE_PRIVATE);
                     prefs1.edit().clear().apply();
                     SharedPreferences prefs2 = requireContext().getSharedPreferences("AuthPreferences", Context.MODE_PRIVATE);
                     prefs2.edit().clear().apply();
-
                     Intent intent = new Intent(requireContext(), AuthActivity.class);
                     intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
                     startActivity(intent);
@@ -126,13 +142,8 @@ public class ProfileFragment extends Fragment implements ProfileView, TrackView 
                 .setNegativeButton("Hủy", null)
                 .show());
 
-        followerContainer.setOnClickListener(v4 -> {
-            navigate(FollowerListFragment.newInstance());
-        });
-
-        followingContainer.setOnClickListener(v5 -> {
-            navigate(FollowingListFragment.newInstance());
-        });
+        followerContainer.setOnClickListener(v4 -> navigate(FollowerListFragment.newInstance()));
+        followingContainer.setOnClickListener(v5 -> navigate(FollowingListFragment.newInstance()));
 
         return v;
     }
@@ -145,11 +156,24 @@ public class ProfileFragment extends Fragment implements ProfileView, TrackView 
                 .commit();
     }
 
+    private void updateFollowButton(boolean following) {
+        if (btnFollowUser == null) return;
+        if (following) {
+            btnFollowUser.setText("Followed");
+            btnFollowUser.setBackgroundTintList(
+                    ContextCompat.getColorStateList(requireContext(), R.color.accent_orange));
+            btnFollowUser.setTextColor(getResources().getColor(android.R.color.white));
+        } else {
+            btnFollowUser.setText("Follow");
+            btnFollowUser.setBackgroundTintList(
+                    ContextCompat.getColorStateList(requireContext(), android.R.color.transparent));
+            btnFollowUser.setTextColor(getResources().getColor(R.color.accent_orange));
+        }
+    }
+
     @Override public void showLoading() {}
     @Override public void hideLoading() {}
-    @Override public void onError(String msg) {
-        Toast.makeText(requireContext(), msg, Toast.LENGTH_SHORT).show();
-    }
+    @Override public void onError(String msg) { Toast.makeText(requireContext(), msg, Toast.LENGTH_SHORT).show(); }
 
     @Override
     public void onProfileLoaded(User user) {
@@ -170,7 +194,6 @@ public class ProfileFragment extends Fragment implements ProfileView, TrackView 
     @Override
     public void onTracksLoaded(List<Track> tracks) {
         TrackAdapterUpload adapter = new TrackAdapterUpload(requireContext(), tracks, isSelf);
-
         likePresenter.checkLikes(firebaseUid, tracks);
 
         adapter.setOnItemClick(track -> {
@@ -178,9 +201,8 @@ public class ProfileFragment extends Fragment implements ProfileView, TrackView 
                 ((MainActivity) getActivity()).showNowPlaying(track);
         });
 
-        adapter.setOnLikeClick((track, liked) -> {
-            likePresenter.likeTrack(firebaseUid, track.getId(), liked);
-        });
+        adapter.setOnLikeClick((track, liked) ->
+                likePresenter.likeTrack(firebaseUid, track.getId(), liked));
 
         rvUploads.setAdapter(adapter);
     }
@@ -191,10 +213,21 @@ public class ProfileFragment extends Fragment implements ProfileView, TrackView 
     }
 
     @Override
+    public void onFollowCountLoaded(int followers, int following) {
+        if (followers >= 0) tvFollowers.setText(String.valueOf(followers));
+        if (following >= 0) tvFollowing.setText(String.valueOf(following));
+    }
+
+    @Override
+    public void onFollowChanged(boolean following) { updateFollowButton(following); }
+
+    @Override
+    public void onFollowStatusChecked(boolean followed) { updateFollowButton(followed); }
+
+    @Override
     public void onDestroyView() {
         super.onDestroyView();
-        if (getActivity() instanceof com.example.sound4you.MainActivity) {
-            ((com.example.sound4you.MainActivity) getActivity()).showBottomNav();
-        }
+        if (getActivity() instanceof MainActivity)
+            ((MainActivity) getActivity()).showBottomNav();
     }
 }

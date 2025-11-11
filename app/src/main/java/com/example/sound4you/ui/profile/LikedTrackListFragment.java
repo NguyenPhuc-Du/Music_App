@@ -34,7 +34,6 @@ public class LikedTrackListFragment extends Fragment implements TrackView {
     private LikePresenterImpl likePresenter;
     private String firebaseUid;
 
-    // make adapter a field so we can refresh it from like callback
     private TrackAdapterLike adapter;
 
     @Nullable

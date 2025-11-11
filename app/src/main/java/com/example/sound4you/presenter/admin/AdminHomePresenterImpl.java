@@ -1,6 +1,6 @@
 package com.example.sound4you.presenter.admin;
 
-import com.example.sound4you.UserCountResponse;
+import com.example.sound4you.data.model.UserCountResponse;
 import com.example.sound4you.data.model.ApprovedCountResponse;
 import com.example.sound4you.data.model.PendingCountResponse;
 import com.example.sound4you.data.repository.AdminRepository;

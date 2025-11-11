@@ -23,7 +23,7 @@ import com.github.mikephil.charting.data.PieEntry;
 import java.util.ArrayList;
 import java.util.List;
 
-public class FragmentAdmin extends Fragment implements GenreStatsView {
+public class FragmentStats extends Fragment implements GenreStatsView {
 
     private PieChart pieChart;
     private GenreStatsPresenter presenter;
@@ -32,7 +32,7 @@ public class FragmentAdmin extends Fragment implements GenreStatsView {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_admin, container, false);
+        View view = inflater.inflate(R.layout.fragment_stats, container, false);
 
         pieChart = view.findViewById(R.id.genre_pie_chart);
         presenter = new GenreStatsPresenterImpl(this);
@@ -57,10 +57,13 @@ public class FragmentAdmin extends Fragment implements GenreStatsView {
 
         PieData data = new PieData(dataSet);
         pieChart.setData(data);
+        pieChart.getLegend().setEnabled(false);
         pieChart.getDescription().setEnabled(false);
+        pieChart.setDrawEntryLabels(true);
         pieChart.animateY(1000);
         pieChart.invalidate();
     }
+
 
     @Override
     public void onError(String msg) {

@@ -33,7 +33,6 @@ public class FollowerListFragment extends Fragment implements FollowView {
         recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
 
         firebaseUid = FirebaseAuth.getInstance().getCurrentUser().getUid();
-
         presenter = new FollowPresenterImpl(this);
         presenter.loadFollowersByFirebase(firebaseUid);
 
@@ -42,11 +41,12 @@ public class FollowerListFragment extends Fragment implements FollowView {
 
     @Override
     public void onFollowersLoaded(List<User> followers) {
-        recyclerView.setAdapter(new FollowAdapter(requireContext(), followers, (user, isFollowing) ->
-                presenter.followUser(firebaseUid, user.getId(), isFollowing)));
+        recyclerView.setAdapter(new FollowAdapter(requireContext(), followers));
     }
 
-    @Override public void onFollowingLoaded(List<User> following) {}
+    @Override
+    public void onFollowingLoaded(List<User> following) {}
+
     @Override
     public void onError(String msg) {
         Toast.makeText(requireContext(), msg, Toast.LENGTH_SHORT).show();

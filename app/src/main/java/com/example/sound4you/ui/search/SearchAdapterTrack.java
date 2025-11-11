@@ -42,20 +42,24 @@ public class SearchAdapterTrack extends RecyclerView.Adapter<SearchAdapterTrack.
     }
 
     @Override
-    public void onBindViewHolder(@NonNull SearchTrackViewHolder viewHolder, int position) {
+    public void onBindViewHolder(@NonNull SearchTrackViewHolder holder, int position) {
         Track track = data.get(position);
-        viewHolder.tvTrackTitle.setText(track.getTitle());
-        viewHolder.tvTrackArtist.setText(track.getArtist());
+
+        holder.tvTrackTitle.setText(track.getTitle());
+        holder.tvTrackArtist.setText(track.getArtist());
 
         Glide.with(context)
-                .load(track.getArtistProfilePicture())
-                .placeholder(R.drawable.ic_avatar_placeholder)
-                .into(viewHolder.ivTrackCover);
+                .load(track.getCoverUrl() != null ? track.getCoverUrl() : R.drawable.ic_music_placeholder)
+                .into(holder.ivTrackCover);
 
-        viewHolder.itemView.setOnClickListener(v -> {
-            if (listener != null) {
-                listener.onClick(track);
-            }
+        holder.itemView.setOnClickListener(v -> {
+            if (listener != null) listener.onClick(track);
+        });
+
+        holder.btnLike.setOnClickListener(v -> {
+            holder.btnLike.animate().scaleX(0.8f).scaleY(0.8f).setDuration(100)
+                    .withEndAction(() -> holder.btnLike.animate().scaleX(1f).scaleY(1f).start())
+                    .start();
         });
     }
 
@@ -66,15 +70,14 @@ public class SearchAdapterTrack extends RecyclerView.Adapter<SearchAdapterTrack.
 
     static class SearchTrackViewHolder extends RecyclerView.ViewHolder {
         ImageView ivTrackCover;
-        TextView tvTrackTitle;
-        TextView tvTrackArtist;
-
+        TextView tvTrackTitle, tvTrackArtist;
+        ImageView btnLike;
         SearchTrackViewHolder(@NonNull View v) {
             super(v);
-
             ivTrackCover = v.findViewById(R.id.ivTrackCover);
             tvTrackTitle = v.findViewById(R.id.tvTrackTitle);
             tvTrackArtist = v.findViewById(R.id.tvTrackArtist);
+            btnLike = v.findViewById(R.id.btnLike);
         }
     }
 }

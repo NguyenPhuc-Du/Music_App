@@ -2,14 +2,11 @@ package com.example.sound4you.presenter.auth;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.util.Log;
 
 import com.example.sound4you.data.model.User;
 import com.example.sound4you.data.repository.AuthRepository;
 import com.example.sound4you.ui.auth.AuthView;
-import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 
 import java.util.Map;
 
@@ -42,54 +39,23 @@ public class LoginPresenterImpl implements LoginPresenter {
 
                 if (response.isSuccessful() && response.body() != null) {
                     Map<String, Object> data = response.body();
-                    Object tokenObj = data.get("token");
+                    String token = data.get("token").toString();
                     Map<String, Object> userData = (Map<String, Object>) data.get("user");
+                    int role = ((Double) userData.get("role")).intValue();
 
-                    if (tokenObj != null && userData != null) {
-                        String token = tokenObj.toString();
-                        Object roleObj = userData.get("role");
-                        int role = 0;
-                        if (roleObj instanceof Double) {
-                            role = ((Double) roleObj).intValue();
-                        } else if (roleObj instanceof Integer) {
-                            role = (Integer) roleObj;
-                        }
+                    SharedPreferences prefs = context.getSharedPreferences("AuthPreferences", Context.MODE_PRIVATE);
+                    prefs.edit()
+                            .putString("Token", token)
+                            .putString("Email", email)
+                            .putString("Role", role == 1 ? "admin" : "user")
+                            .apply();
 
-                        int finalRole = role;
+                    authRepository.saveToken(token);
+                    authRepository.saveUserRole(role);
 
-                        firebaseAuth.signInWithEmailAndPassword(email, password)
-                                .addOnSuccessListener((AuthResult result) -> {
-                                    FirebaseUser firebaseUser = result.getUser();
-                                    if (firebaseUser != null) {
-                                        String uid = firebaseUser.getUid();
-
-                                        SharedPreferences prefs = context.getSharedPreferences("AuthPreferences", Context.MODE_PRIVATE);
-                                        prefs.edit()
-                                                .putString("Token", token)
-                                                .putString("UID", uid)
-                                                .putString("Role", finalRole == 1 ? "admin" : "user")
-                                                .apply();
-
-                                        authRepository.saveToken(token);
-                                        authRepository.saveUserRole(finalRole);
-
-                                        if (finalRole == 1) {
-                                            authView.onSuccess("admin");
-                                        } else {
-                                            authView.onSuccess("user");
-                                        }
-                                    } else {
-                                        authView.onError("Không thể xác thực Firebase!");
-                                    }
-                                })
-                                .addOnFailureListener(e -> {
-                                    authView.onError("Sai email hoặc mật khẩu (Firebase)!");
-                                });
-                    } else {
-                        authView.onError("Đăng nhập thất bại! Thiếu dữ liệu phản hồi.");
-                    }
+                    authView.onSuccess(role == 1 ? "admin" : "user");
                 } else {
-                    authView.onError("Sai email hoặc mật khẩu (Server)!");
+                    authView.onError("Sai email hoặc mật khẩu!");
                 }
             }
 

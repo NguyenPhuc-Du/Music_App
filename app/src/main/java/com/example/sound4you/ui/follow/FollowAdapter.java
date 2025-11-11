@@ -1,33 +1,38 @@
 package com.example.sound4you.ui.follow;
 
 import android.content.Context;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
+import android.content.res.ColorStateList;
+import android.util.Log;
+import android.view.*;
 import android.widget.TextView;
-import com.bumptech.glide.Glide;
-import com.google.android.material.button.MaterialButton;
-import com.google.android.material.imageview.ShapeableImageView;
+import android.widget.Toast;
+
 import androidx.annotation.NonNull;
+import androidx.fragment.app.FragmentActivity;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.bumptech.glide.Glide;
 import com.example.sound4you.R;
 import com.example.sound4you.data.model.User;
+import com.example.sound4you.presenter.follow.FollowPresenterImpl;
+import com.example.sound4you.ui.profile.ProfileFragment;
+import com.example.sound4you.ui.stream.FollowStreamView;
+import com.google.android.material.button.MaterialButton;
+import com.google.android.material.imageview.ShapeableImageView;
+import com.google.firebase.auth.FirebaseAuth;
+
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class FollowAdapter extends RecyclerView.Adapter<FollowAdapter.ViewHolder> {
 
     private final Context context;
     private final List<User> userList;
-    private OnFollowClickListener listener;
 
-    public interface OnFollowClickListener {
-        void onFollowClick(User user, boolean isFollowing);
-    }
-
-    public FollowAdapter(Context context, List<User> userList, OnFollowClickListener listener) {
+    public FollowAdapter(Context context, List<User> userList) {
         this.context = context;
         this.userList = userList;
-        this.listener = listener;
     }
 
     @NonNull
@@ -40,32 +45,66 @@ public class FollowAdapter extends RecyclerView.Adapter<FollowAdapter.ViewHolder
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         User user = userList.get(position);
+        String firebaseUid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+
         holder.tvName.setText(user.getUsername());
-        holder.tvFollowerCount.setText(user.getFollowers() + " followers");
 
         Glide.with(context)
                 .load(user.getProfile_picture())
                 .placeholder(R.drawable.ic_avatar_placeholder)
                 .into(holder.ivAvatar);
 
-        // Hiển thị trạng thái nút follow
-        boolean isFollowing = user.getFollowers() > 0;
-        updateButtonStyle(holder.btnFollow, isFollowing);
+        FollowPresenterImpl followPresenter = new FollowPresenterImpl(new FollowStreamView() {
+            @Override
+            public void onFollowChanged(boolean following) {
+                updateButtonStyle(holder.btnFollow, following);
+            }
+
+            @Override
+            public void onFollowStatusChecked(boolean followed) {
+                updateButtonStyle(holder.btnFollow, followed);
+            }
+
+            @Override
+            public void onFollowCountLoaded(int followers, int following) {}
+
+            @Override
+            public void onError(String msg) {
+                Toast.makeText(context, msg, Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        followPresenter.checkFollowed(firebaseUid, user.getId());
 
         holder.btnFollow.setOnClickListener(v -> {
-            boolean newState = !isFollowing;
-            updateButtonStyle(holder.btnFollow, newState);
-            if (listener != null) listener.onFollowClick(user, newState);
+            boolean isCurrentlyFollowed = holder.btnFollow.getText().toString().equals("Followed");
+            followPresenter.followUser(firebaseUid, user.getId(), !isCurrentlyFollowed);
+        });
+
+        holder.ivAvatar.setOnClickListener(v -> {
+            if (!(context instanceof FragmentActivity)) return;
+            FragmentActivity activity = (FragmentActivity) context;
+
+            ProfileFragment fragment = ProfileFragment.newInstanceWithUserId(user.getId());
+            activity.getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.navHostFragment, fragment)
+                    .addToBackStack(null)
+                    .commit();
         });
     }
 
     private void updateButtonStyle(MaterialButton button, boolean isFollowing) {
         if (isFollowing) {
-            button.setText("Following");
-            button.setBackgroundTintList(context.getColorStateList(R.color.red_follow));
+            button.setText("Followed");
+            button.setTextColor(context.getColor(android.R.color.white));
+            button.setBackgroundTintList(ColorStateList.valueOf(context.getColor(R.color.accent_orange)));
         } else {
             button.setText("Follow");
-            button.setBackgroundTintList(context.getColorStateList(R.color.purple_500));
+            button.setTextColor(context.getColor(R.color.accent_orange));
+            button.setStrokeColor(ColorStateList.valueOf(context.getColor(R.color.accent_orange)));
+            button.setStrokeWidth(2);
+            button.setBackgroundTintList(ColorStateList.valueOf(context.getColor(android.R.color.transparent)));
         }
     }
 
@@ -83,7 +122,6 @@ public class FollowAdapter extends RecyclerView.Adapter<FollowAdapter.ViewHolder
             super(itemView);
             ivAvatar = itemView.findViewById(R.id.ivUserAvatar);
             tvName = itemView.findViewById(R.id.tvUserName);
-            tvFollowerCount = itemView.findViewById(R.id.tvUserFollowerCount);
             btnFollow = itemView.findViewById(R.id.btnFollow);
         }
     }

@@ -1,19 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
-        android:id="@+id/nav_dashboard"
+        android:id="@+id/adminHomeFragment"
         android:icon="@drawable/ic_dashboard"
         android:title="Dashboard" />
     <item
-        android:id="@+id/nav_tracks"
+        android:id="@+id/manageTrackFragment"
         android:icon="@drawable/ic_music_note"
         android:title="Tracks" />
     <item
-        android:id="@+id/nav_users"
+        android:id="@+id/manageUserFragment"
         android:icon="@drawable/ic_person"
         android:title="Users" />
     <item
-        android:id="@+id/nav_stats"
+        android:id="@+id/fragmentAdmin"
         android:icon="@drawable/ic_chart_data"
         android:title="Stats" />
     <item

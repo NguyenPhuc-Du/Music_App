@@ -1,4 +1,4 @@
-package com.example.sound4you.ui.follow;
+package com.example.sound4you.ui.profile;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -17,7 +17,6 @@ import com.bumptech.glide.Glide;
 import com.example.sound4you.R;
 import com.example.sound4you.data.model.User;
 import com.example.sound4you.presenter.profile.ProfilePresenterImpl;
-import com.example.sound4you.ui.profile.ProfileView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
@@ -57,7 +56,6 @@ public class EditProfileFragment extends Fragment implements ProfileView {
 
         if (getActivity() instanceof com.example.sound4you.MainActivity) {
             ((com.example.sound4you.MainActivity) getActivity()).hideBottomNav();
-            // hide now playing container directly if present
             nowPlaying.setVisibility(View.GONE);
         } else {
             requireActivity().findViewById(R.id.bottomNav).setVisibility(View.GONE);
