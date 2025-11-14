@@ -3,22 +3,20 @@ package com.example.sound4you.data.model;
 import java.util.List;
 
 public class CheckLikesRequest {
-    private String firebaseUid;
+    private int user_id;
     private List<Integer> trackIds;
 
-    // Constructor
-    public CheckLikesRequest(String firebaseUid, List<Integer> trackIds) {
-        this.firebaseUid = firebaseUid;
+    public CheckLikesRequest(int user_id, List<Integer> trackIds) {
+        this.user_id = user_id;
         this.trackIds = trackIds;
     }
 
-    // Getters and setters
-    public String getFirebaseUid() {
-        return firebaseUid;
+    public int getUser_id() {
+        return user_id;
     }
 
-    public void setFirebaseUid(String firebaseUid) {
-        this.firebaseUid = firebaseUid;
+    public void setUser_id(int user_id) {
+        this.user_id = user_id;
     }
 
     public List<Integer> getTrackIds() {
@@ -29,4 +27,3 @@ public class CheckLikesRequest {
         this.trackIds = trackIds;
     }
 }
-

@@ -7,7 +7,6 @@ import com.example.sound4you.ui.stream.LikeStreamView;
 import com.example.sound4you.data.repository.LikeRepository;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import retrofit2.Call;
@@ -24,21 +23,13 @@ public class LikePresenterImpl implements LikePresenter {
     }
 
     @Override
-    public void likeTrack(String firebaseUid, int trackId, boolean isLiked) {
-        Map<String, Object> data = new HashMap<>();
-        data.put("firebaseUid", firebaseUid);
-        data.put("track_id", trackId);
-
-        likeRepository.likeTrack(data, new Callback<Map<String, Object>>() {
+    public void likeTrack(int userId, int trackId, boolean isLiked) {
+        likeRepository.likeTrack(userId, trackId, new Callback<Map<String, Object>>() {
             @Override
             public void onResponse(Call<Map<String, Object>> call, Response<Map<String, Object>> response) {
                 if (response.isSuccessful() && response.body() != null) {
                     Boolean liked = (Boolean) response.body().get("liked");
-                    if (liked != null) {
-                        view.onLikeChanged(liked);
-                    } else {
-                        view.onError("Invalid response format");
-                    }
+                    view.onLikeChanged(liked != null && liked);
                 } else {
                     view.onError("Không nhận được phản hồi từ máy chủ");
                 }
@@ -46,24 +37,19 @@ public class LikePresenterImpl implements LikePresenter {
 
             @Override
             public void onFailure(Call<Map<String, Object>> call, Throwable t) {
-                Log.e("LikePresenter", "Lỗi mạng: " + t.getMessage());
                 view.onError("Lỗi mạng: " + t.getMessage());
             }
         });
     }
 
     @Override
-    public void checkLiked(String firebaseUid, int trackId) {
-        likeRepository.checkLiked(firebaseUid, trackId, new Callback<Map<String, Boolean>>() {
+    public void checkLiked(int userId, int trackId) {
+        likeRepository.checkLiked(userId, trackId, new Callback<Map<String, Boolean>>() {
             @Override
             public void onResponse(Call<Map<String, Boolean>> call, Response<Map<String, Boolean>> response) {
                 if (response.isSuccessful() && response.body() != null) {
                     Boolean liked = response.body().get("liked");
-                    if (liked != null) {
-                        view.onLikeStatusChecked(liked);
-                    } else {
-                        view.onError("Invalid response format");
-                    }
+                    view.onLikeStatusChecked(liked != null && liked);
                 } else {
                     view.onError("Không thể kiểm tra trạng thái like");
                 }
@@ -77,34 +63,27 @@ public class LikePresenterImpl implements LikePresenter {
     }
 
     @Override
-    public void checkLikes(String firebaseUid, List<Track> tracks) {
-        if (tracks == null || tracks.isEmpty()) {
-            view.onError("No tracks to check");
-            return;
-        }
+    public void checkLikes(int userId, List<Track> tracks) {
+        if (tracks == null || tracks.isEmpty()) { return; }
 
         List<Integer> trackIds = new ArrayList<>();
-        for (Track track : tracks) {
-            trackIds.add(track.getId());
-        }
+        for (Track track : tracks) trackIds.add(track.getId());
 
-        likeRepository.checkLikes(firebaseUid, trackIds, new Callback<List<Track>>() {
+        likeRepository.checkLikes(userId, trackIds, new Callback<List<Track>>() {
             @Override
             public void onResponse(Call<List<Track>> call, Response<List<Track>> response) {
                 if (response.isSuccessful() && response.body() != null) {
                     List<Track> updatedTracks = response.body();
                     for (Track track : tracks) {
-                        for (Track updatedTrack : updatedTracks) {
-                            if (track.getId() == updatedTrack.getId()) {
-                                track.setLiked(updatedTrack.isLiked());
-                                break;
+                        for (Track t : updatedTracks) {
+                            if (track.getId() == t.getId()) {
+                                track.setLiked(t.isLiked());
                             }
                         }
                     }
-
                     view.onTracksUpdated(tracks);
                 } else {
-                    view.onError("Không thể kiểm tra trạng thái like");
+                    view.onError("Không thể kiểm tra liked");
                 }
             }
 
@@ -115,4 +94,5 @@ public class LikePresenterImpl implements LikePresenter {
         });
     }
 }
+
 

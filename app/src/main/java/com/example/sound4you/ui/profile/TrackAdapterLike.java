@@ -48,8 +48,7 @@ public class TrackAdapterLike extends RecyclerView.Adapter<TrackAdapterLike.VH> 
                 .placeholder(R.drawable.ic_music_placeholder)
                 .into(h.cover);
 
-        // use BLACK for unliked so the icon is visible on light backgrounds
-        int color = track.isLiked() ? Color.parseColor("#FF7A00") : Color.BLACK;
+        int color = track.isLiked() ? Color.parseColor("#FF7A00") : Color.WHITE;
         h.like.setImageTintList(ColorStateList.valueOf(color));
 
         h.like.setImageResource(R.drawable.ic_like);
@@ -57,7 +56,7 @@ public class TrackAdapterLike extends RecyclerView.Adapter<TrackAdapterLike.VH> 
             boolean newState = !track.isLiked();
             track.setLiked(newState);
             h.like.setImageResource(R.drawable.ic_like);
-            h.like.setImageTintList(ColorStateList.valueOf(newState ? Color.parseColor("#FF7A00") : Color.BLACK));
+            h.like.setImageTintList(ColorStateList.valueOf(newState ? Color.parseColor("#FF7A00") : Color.WHITE));
 
             if (likeClick != null) likeClick.onLikeClick(track, newState);
         });

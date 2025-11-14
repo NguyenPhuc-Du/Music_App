@@ -3,6 +3,7 @@ package com.example.sound4you.ui.profile;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
@@ -17,7 +18,6 @@ import com.bumptech.glide.Glide;
 import com.example.sound4you.R;
 import com.example.sound4you.data.model.User;
 import com.example.sound4you.presenter.profile.ProfilePresenterImpl;
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
@@ -36,7 +36,7 @@ public class EditProfileFragment extends Fragment implements ProfileView {
     private Uri selectedImageUri;
     private ProfilePresenterImpl profilePresenter;
     private User currentUser;
-    private String firebaseUid;
+    private int userId;
 
     private boolean wasNowPlayingVisible = false;
 
@@ -49,7 +49,11 @@ public class EditProfileFragment extends Fragment implements ProfileView {
     public View onCreateView(@NonNull LayoutInflater inflater,
                              @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
+
         View v = inflater.inflate(R.layout.fragment_edit_profile, container, false);
+
+        SharedPreferences prefs = requireContext().getSharedPreferences("AuthPreferences", 0);
+        userId = prefs.getInt("UserId", -1);
 
         View nowPlaying = requireActivity().findViewById(R.id.includedNowPlayingBar);
         wasNowPlayingVisible = nowPlaying.getVisibility() == View.VISIBLE;
@@ -69,9 +73,8 @@ public class EditProfileFragment extends Fragment implements ProfileView {
         edtBio = v.findViewById(R.id.edtBio);
 
         profilePresenter = new ProfilePresenterImpl(this);
-        firebaseUid = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
-        profilePresenter.loadProfileByFirebase(firebaseUid);
+        profilePresenter.loadProfile(userId);
 
         btnBack.setOnClickListener(v1 -> requireActivity().onBackPressed());
 
@@ -100,13 +103,7 @@ public class EditProfileFragment extends Fragment implements ProfileView {
             openGallery();
         });
 
-        dialogView.findViewById(R.id.tvOptionCancel).setOnClickListener(v -> {
-            dialog.dismiss();
-            selectedImageUri = null;
-            Glide.with(this)
-                    .load(R.drawable.ic_avatar_placeholder)
-                    .into(profilePicture);
-        });
+        dialogView.findViewById(R.id.tvOptionCancel).setOnClickListener(v -> dialog.dismiss());
 
         dialog.show();
     }
@@ -133,7 +130,8 @@ public class EditProfileFragment extends Fragment implements ProfileView {
                 Bitmap photo = (Bitmap) data.getExtras().get("data");
                 profilePicture.setImageBitmap(photo);
                 selectedImageUri = Uri.parse(MediaStore.Images.Media.insertImage(
-                        requireContext().getContentResolver(), photo, "profile_" + System.currentTimeMillis(), null
+                        requireContext().getContentResolver(), photo,
+                        "profile_" + System.currentTimeMillis(), null
                 ));
             }
         }
@@ -156,7 +154,7 @@ public class EditProfileFragment extends Fragment implements ProfileView {
         if (selectedImageUri != null) {
             uploadImageToFirebase(selectedImageUri);
         } else {
-            profilePresenter.updateProfileByFirebase(firebaseUid, currentUser);
+            profilePresenter.updateProfile(userId, currentUser);
         }
     }
 
@@ -164,14 +162,14 @@ public class EditProfileFragment extends Fragment implements ProfileView {
         StorageReference ref = FirebaseStorage.getInstance()
                 .getReference("profile_images/" + UUID.randomUUID() + ".jpg");
 
-        ref.putFile(uri)
-                .addOnSuccessListener(task -> ref.getDownloadUrl().addOnSuccessListener(downloadUri -> {
+        ref.putFile(uri).addOnSuccessListener(task ->
+                ref.getDownloadUrl().addOnSuccessListener(downloadUri -> {
                     currentUser.setProfile_picture(downloadUri.toString());
-                    profilePresenter.updateProfileByFirebase(firebaseUid, currentUser);
-                }))
-                .addOnFailureListener(e -> {
-                    Toast.makeText(requireContext(), "Tải ảnh thất bại: " + e.getMessage(), Toast.LENGTH_SHORT).show();
-                });
+                    profilePresenter.updateProfile(userId, currentUser);
+                })
+        ).addOnFailureListener(e ->
+                Toast.makeText(requireContext(), "Tải ảnh thất bại: " + e.getMessage(), Toast.LENGTH_SHORT).show()
+        );
     }
 
     @Override
@@ -211,14 +209,11 @@ public class EditProfileFragment extends Fragment implements ProfileView {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
+
         if (getActivity() instanceof com.example.sound4you.MainActivity) {
-            ((com.example.sound4you.MainActivity) getActivity()).showBottomNav();
-            if (wasNowPlayingVisible)
-                ((com.example.sound4you.MainActivity) getActivity()).restoreNowPlayingBar();
-        } else {
-            requireActivity().findViewById(R.id.bottomNav).setVisibility(View.VISIBLE);
-            if (wasNowPlayingVisible)
-                requireActivity().findViewById(R.id.includedNowPlayingBar).setVisibility(View.VISIBLE);
+            com.example.sound4you.MainActivity act = (com.example.sound4you.MainActivity) getActivity();
+            act.showBottomNav();
+            if (wasNowPlayingVisible) act.restoreNowPlayingBar();
         }
     }
 }

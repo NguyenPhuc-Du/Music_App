@@ -12,7 +12,6 @@ import androidx.navigation.ui.NavigationUI;
 import com.example.sound4you.R;
 import com.example.sound4you.ui.auth.AuthActivity;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.google.firebase.auth.FirebaseAuth;
 
 public class AdminActivity extends AppCompatActivity {
 
@@ -34,7 +33,6 @@ public class AdminActivity extends AppCompatActivity {
 
         bottomNav.setOnItemSelectedListener(item -> {
             if (item.getItemId() == R.id.nav_logout) {
-                FirebaseAuth.getInstance().signOut();
                 SharedPreferences prefs = getSharedPreferences("AuthPreferences", MODE_PRIVATE);
                 prefs.edit().clear().apply();
 

@@ -10,22 +10,15 @@ import retrofit2.Callback;
 public class ProfileRepository {
     private final ProfileDao profileDao;
 
-    public ProfileRepository () {
+    public ProfileRepository() {
         profileDao = ApiClient.getClient().create(ProfileDao.class);
     }
 
-    public void getUserFirebase(String firebaseUid, Callback<User> callback) {
-        Call<User> call = profileDao.getUserByFirebase(firebaseUid);
-        call.enqueue(callback);
+    public void getUser(int id, Callback<User> callback) {
+        profileDao.getUserById(id).enqueue(callback);
     }
 
-    public void getUserId(int userId, Callback<User> callback) {
-        Call<User> call = profileDao.getUserId(userId);
-        call.enqueue(callback);
-    }
-
-    public void updateUser(String firebaseUid, User user, Callback<User> callback) {
-        Call<User> call = profileDao.updateUser(firebaseUid, user);
-        call.enqueue(callback);
+    public void updateUser(int id, User user, Callback<User> callback) {
+        profileDao.updateUser(id, user).enqueue(callback);
     }
 }

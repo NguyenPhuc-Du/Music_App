@@ -16,10 +16,10 @@ public interface FollowDao {
     Call<Map<String, Boolean>> checkFollowed(@Body Map<String, Object> body);
 
     @POST("api/follow/following")
-    Call<List<User>> getFollowingByFirebase(@Body Map<String, Object> body);
+    Call<List<User>> getFollowingByUserId(@Body Map<String, Object> body);
 
     @POST("api/follow/followers")
-    Call<List<User>> getFollowersByFirebase(@Body Map<String, Object> body);
+    Call<List<User>> getFollowersByUserId(@Body Map<String, Object> body);
 
     @POST("api/follow/countFollowers")
     Call<Map<String, Integer>> countFollowers(@Body Map<String, Object> body);

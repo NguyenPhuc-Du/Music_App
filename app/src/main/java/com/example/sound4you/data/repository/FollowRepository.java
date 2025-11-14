@@ -11,44 +11,48 @@ import retrofit2.Call;
 import retrofit2.Callback;
 
 public class FollowRepository {
+
     private final FollowDao followDao;
 
     public FollowRepository() {
         followDao = ApiClient.getClient().create(FollowDao.class);
     }
 
-    public void followUser(Map<String, Object> data, Callback<Map<String, Object>> callback) {
-        followDao.followUser(data).enqueue(callback);
-    }
-
-    public void checkFollowed(String firebaseUid, int userId, Callback<Map<String, Boolean>> callback) {
-        Map<String, Object> data = new HashMap<>();
-        data.put("firebaseUid", firebaseUid);
-        data.put("userId", userId);
-        followDao.checkFollowed(data).enqueue(callback);
-    }
-
-    public void getFollowersByFirebase(String firebaseUid, Callback<List<User>> callback) {
-        Map<String, Object> data = new HashMap<>();
-        data.put("firebaseUid", firebaseUid);
-        followDao.getFollowersByFirebase(data).enqueue(callback);
-    }
-
-    public void getFollowingByFirebase(String firebaseUid, Callback<List<User>> callback) {
-        Map<String, Object> data = new HashMap<>();
-        data.put("firebaseUid", firebaseUid);
-        followDao.getFollowingByFirebase(data).enqueue(callback);
-    }
-
-    public void countFollowers(String firebaseUid, Callback<Map<String, Integer>> callback) {
+    public void followUser(int userId, int followingId, Callback<Map<String, Object>> callback) {
         Map<String, Object> body = new HashMap<>();
-        body.put("firebaseUid", firebaseUid);
+        body.put("user_id", userId);
+        body.put("following_id", followingId);
+        followDao.followUser(body).enqueue(callback);
+    }
+
+    public void checkFollowed(int userId, int otherId, Callback<Map<String, Boolean>> callback) {
+        Map<String, Object> body = new HashMap<>();
+        body.put("user_id", userId);
+        body.put("other_id", otherId);
+        followDao.checkFollowed(body).enqueue(callback);
+    }
+
+    public void getFollowers(int userId, Callback<List<User>> callback) {
+        Map<String, Object> body = new HashMap<>();
+        body.put("user_id", userId);
+        followDao.getFollowersByUserId(body).enqueue(callback);
+    }
+
+    public void getFollowing(int userId, Callback<List<User>> callback) {
+        Map<String, Object> body = new HashMap<>();
+        body.put("user_id", userId);
+        followDao.getFollowingByUserId(body).enqueue(callback);
+    }
+
+    public void countFollowers(int userId, Callback<Map<String, Integer>> callback) {
+        Map<String, Object> body = new HashMap<>();
+        body.put("user_id", userId);
         followDao.countFollowers(body).enqueue(callback);
     }
 
-    public void countFollowing(String firebaseUid, Callback<Map<String, Integer>> callback) {
+    public void countFollowing(int userId, Callback<Map<String, Integer>> callback) {
         Map<String, Object> body = new HashMap<>();
-        body.put("firebaseUid", firebaseUid);
+        body.put("user_id", userId);
         followDao.countFollowing(body).enqueue(callback);
     }
 }

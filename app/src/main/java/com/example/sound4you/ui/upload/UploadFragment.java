@@ -7,15 +7,16 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.view.*;
 import android.widget.*;
+
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.*;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.fragment.NavHostFragment;
+
 import com.bumptech.glide.Glide;
 import com.example.sound4you.R;
 import com.example.sound4you.presenter.upload.UploadPresenterImpl;
-import com.google.firebase.auth.FirebaseAuth;
 import com.example.sound4you.presenter.genre.GenrePresenterImpl;
 import com.example.sound4you.ui.genre.GenreView;
 import com.example.sound4you.data.model.Genre;
@@ -38,7 +39,10 @@ public class UploadFragment extends Fragment implements UploadView {
 
     private final ActivityResultLauncher<Intent> pickMusicLauncher =
             registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
-                if (result.getResultCode() == Activity.RESULT_OK && result.getData() != null && result.getData().getData() != null) {
+                if (result.getResultCode() == Activity.RESULT_OK &&
+                        result.getData() != null &&
+                        result.getData().getData() != null) {
+
                     musicUri = result.getData().getData();
                     Toast.makeText(requireContext(), "Đã chọn bài nhạc!", Toast.LENGTH_SHORT).show();
                     showUploadForm();
@@ -49,7 +53,10 @@ public class UploadFragment extends Fragment implements UploadView {
 
     private final ActivityResultLauncher<Intent> pickImageLauncher =
             registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
-                if (result.getResultCode() == Activity.RESULT_OK && result.getData() != null && result.getData().getData() != null) {
+                if (result.getResultCode() == Activity.RESULT_OK &&
+                        result.getData() != null &&
+                        result.getData().getData() != null) {
+
                     coverUri = result.getData().getData();
                     Glide.with(this).load(coverUri).into(imgCover);
                 }
@@ -60,9 +67,10 @@ public class UploadFragment extends Fragment implements UploadView {
     public View onCreateView(@NonNull LayoutInflater inflater,
                              @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
+
         View v = inflater.inflate(R.layout.fragment_upload, container, false);
 
-        presenter = new com.example.sound4you.presenter.upload.UploadPresenterImpl(requireContext(), this);
+        presenter = new UploadPresenterImpl(requireContext(), this);
         imgCover = v.findViewById(R.id.imgCoverUpload);
         edtTitle = v.findViewById(R.id.edtTrackTitle);
         tvGenre = v.findViewById(R.id.tvTrackGenre);
@@ -95,17 +103,21 @@ public class UploadFragment extends Fragment implements UploadView {
         pickIntent.setType("audio/*");
         pickMusicLauncher.launch(Intent.createChooser(pickIntent, "Chọn file nhạc"));
 
-        if (getActivity() instanceof com.example.sound4you.MainActivity) {
-            ((com.example.sound4you.MainActivity) getActivity()).hideBottomNav();
-        }
-
         imgCover.setOnClickListener(v1 -> {
             Intent pickImg = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
             pickImageLauncher.launch(pickImg);
         });
 
         btnSave.setOnClickListener(v2 -> {
-            String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+            int userId = requireContext()
+                    .getSharedPreferences("AuthPreferences", android.content.Context.MODE_PRIVATE)
+                    .getInt("UserId", -1);
+
+            if (userId == -1) {
+                Toast.makeText(requireContext(), "Không tìm thấy user_id!", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
             String title = edtTitle.getText().toString().trim();
             String genre = selectedGenre != null ? selectedGenre.getTitle() : "";
 
@@ -113,7 +125,8 @@ public class UploadFragment extends Fragment implements UploadView {
                 Toast.makeText(requireContext(), "Vui lòng chọn bài nhạc!", Toast.LENGTH_SHORT).show();
                 return;
             }
-            presenter.uploadTrack(uid, title, genre, musicUri, coverUri);
+
+            presenter.uploadTrack(userId, title, genre, musicUri, coverUri);
         });
 
         return v;
@@ -121,7 +134,8 @@ public class UploadFragment extends Fragment implements UploadView {
 
     private void showUploadForm() {
         View vw = getView();
-        if (vw != null) vw.findViewById(R.id.trackDetailsUploadContainer).setVisibility(View.VISIBLE);
+        if (vw != null)
+            vw.findViewById(R.id.trackDetailsUploadContainer).setVisibility(View.VISIBLE);
     }
 
     private void showGenreDialog() {
@@ -141,7 +155,6 @@ public class UploadFragment extends Fragment implements UploadView {
     @Override
     public void onUploadSuccess(String message) {
         Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show();
-        // return to previous screen after successful upload
         NavHostFragment.findNavController(UploadFragment.this).navigateUp();
     }
 
@@ -149,13 +162,4 @@ public class UploadFragment extends Fragment implements UploadView {
     public void onUploadError(String error) {
         Toast.makeText(requireContext(), error, Toast.LENGTH_SHORT).show();
     }
-
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        if (getActivity() instanceof com.example.sound4you.MainActivity) {
-            ((com.example.sound4you.MainActivity) getActivity()).showBottomNav();
-        }
-    }
-
 }

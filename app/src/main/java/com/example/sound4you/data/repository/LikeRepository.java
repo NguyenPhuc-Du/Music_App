@@ -19,21 +19,22 @@ public class LikeRepository {
         likeDao = ApiClient.getClient().create(LikeDao.class);
     }
 
-    public void likeTrack(Map<String, Object> data, Callback<Map<String, Object>> callback) {
+    public void likeTrack(int userId, int trackId, Callback<Map<String, Object>> callback) {
+        Map<String, Object> data = new HashMap<>();
+        data.put("user_id", userId);
+        data.put("track_id", trackId);
         likeDao.likeTrack(data).enqueue(callback);
     }
 
-    public void checkLiked(String firebaseUid, int trackId, Callback<Map<String, Boolean>> callback) {
+    public void checkLiked(int userId, int trackId, Callback<Map<String, Boolean>> callback) {
         Map<String, Object> data = new HashMap<>();
-        data.put("firebaseUid", firebaseUid);
-        data.put("trackId", trackId);
-
+        data.put("user_id", userId);
+        data.put("track_id", trackId);
         likeDao.checkLiked(data).enqueue(callback);
     }
 
-    public void checkLikes(String firebaseUid, List<Integer> trackIds, Callback<List<Track>> callback) {
-        CheckLikesRequest request = new CheckLikesRequest(firebaseUid, trackIds);
-        Call<List<Track>> call = likeDao.checkLikes(request);
-        call.enqueue(callback);
+    public void checkLikes(int userId, List<Integer> trackIds, Callback<List<Track>> callback) {
+        CheckLikesRequest request = new CheckLikesRequest(userId, trackIds);
+        likeDao.checkLikes(request).enqueue(callback);
     }
 }

@@ -1,16 +1,12 @@
 package com.example.sound4you.presenter.auth;
 
 import android.content.Context;
-import android.content.SharedPreferences;
-import android.util.Log;
 
 import com.example.sound4you.data.model.User;
 import com.example.sound4you.data.model.Email;
 import com.example.sound4you.data.repository.AuthRepository;
 import com.example.sound4you.data.repository.EmailRepository;
 import com.example.sound4you.ui.auth.AuthView;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 
 import java.util.Map;
 
@@ -23,14 +19,12 @@ public class RegisterPresenterImpl implements RegisterPresenter {
     private final AuthRepository authRepository;
     private final EmailRepository emailRepository;
     private final Context context;
-    private final FirebaseAuth firebaseAuth;
 
     public RegisterPresenterImpl(AuthView authView, Context context) {
         this.authView = authView;
         this.authRepository = new AuthRepository(context);
         this.emailRepository = new EmailRepository(context);
         this.context = context;
-        this.firebaseAuth = FirebaseAuth.getInstance();
     }
 
     @Override
@@ -38,59 +32,40 @@ public class RegisterPresenterImpl implements RegisterPresenter {
         authView.showLoading();
 
         Email emailObj = new Email(email, code, "register");
+
         emailRepository.verifyCode(emailObj, new Callback<Map<String, String>>() {
             @Override
-            public void onResponse(Call<Map<String, String>> call, Response<Map<String, String>> response) {
-                if (response.isSuccessful()) {
-                    firebaseAuth.createUserWithEmailAndPassword(email, password)
-                            .addOnSuccessListener(authResult -> {
-                                FirebaseUser firebaseUser = authResult.getUser();
-                                if (firebaseUser == null) {
-                                    authView.hideLoading();
-                                    authView.onError("Không thể tạo tài khoản Firebase!");
-                                    return;
-                                }
-
-                                String uid = firebaseUser.getUid();
-
-                                SharedPreferences prefs = context.getSharedPreferences("AuthPreferences", Context.MODE_PRIVATE);
-                                prefs.edit().putString("UID", uid).apply();
-
-                                User user = new User(username, email, password);
-                                user.setFirebaseUid(uid);
-
-                                authRepository.register(user, new Callback<Map<String, String>>() {
-                                    @Override
-                                    public void onResponse(Call<Map<String, String>> call, Response<Map<String, String>> response) {
-                                        authView.hideLoading();
-                                        if (response.isSuccessful()) {
-                                            authView.onSuccess("Đăng ký thành công!");
-                                        } else {
-                                            authView.onError("Lỗi lưu thông tin lên server!");
-                                        }
-                                    }
-
-                                    @Override
-                                    public void onFailure(Call<Map<String, String>> call, Throwable t) {
-                                        authView.hideLoading();
-                                        authView.onError("Lỗi mạng khi gửi dữ liệu lên server!");
-                                    }
-                                });
-                            })
-                            .addOnFailureListener(e -> {
-                                authView.hideLoading();
-                                authView.onError("Tạo tài khoản Firebase thất bại: " + e.getMessage());
-                            });
-                } else {
+            public void onResponse(Call<Map<String, String>> call, Response<Map<String, String>> res) {
+                if (!res.isSuccessful()) {
                     authView.hideLoading();
-                    authView.onError("Mã xác minh không hợp lệ hoặc đã hết hạn.");
+                    authView.onError("Mã xác minh không hợp lệ!");
+                    return;
                 }
+
+                User user = new User(username, email, password);
+                authRepository.register(user, new Callback<Map<String, String>>() {
+                    @Override
+                    public void onResponse(Call<Map<String, String>> call, Response<Map<String, String>> res2) {
+                        authView.hideLoading();
+                        if (res2.isSuccessful()) {
+                            authView.onSuccess("Đăng ký thành công!");
+                        } else {
+                            authView.onError("Lỗi server!");
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<Map<String, String>> call, Throwable t) {
+                        authView.hideLoading();
+                        authView.onError("Lỗi mạng!");
+                    }
+                });
             }
 
             @Override
             public void onFailure(Call<Map<String, String>> call, Throwable t) {
                 authView.hideLoading();
-                authView.onError("Lỗi mạng khi xác minh mã.");
+                authView.onError("Lỗi mạng!");
             }
         });
     }

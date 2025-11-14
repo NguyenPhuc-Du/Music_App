@@ -31,8 +31,6 @@ import com.example.sound4you.presenter.genre.GenrePresenter;
 import com.example.sound4you.presenter.genre.GenrePresenterImpl;
 import com.example.sound4you.ui.genre.GenreView;
 import com.example.sound4you.ui.profile.ProfileFragment;
-import com.example.sound4you.ui.stream.FollowStreamView;
-import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.List;
 
@@ -227,11 +225,9 @@ public class SearchFragment extends Fragment implements SearchView, GenreView{
     public void onDestroyView() {
         super.onDestroyView();
         if (getActivity() instanceof com.example.sound4you.MainActivity) {
-            ((com.example.sound4you.MainActivity) getActivity()).showBottomNav();
             if (wasNowPlayingVisible)
                 ((com.example.sound4you.MainActivity) getActivity()).restoreNowPlayingBar();
         } else {
-            requireActivity().findViewById(R.id.bottomNav).setVisibility(View.VISIBLE);
             if (wasNowPlayingVisible)
                 requireActivity().findViewById(R.id.includedNowPlayingBar).setVisibility(View.VISIBLE);
         }

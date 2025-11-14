@@ -50,21 +50,14 @@ dependencies {
     implementation("androidx.navigation:navigation-fragment:$nav_version")
     implementation("androidx.navigation:navigation-ui:$nav_version")
 
-    // Retrofit
     implementation("com.squareup.retrofit2:retrofit:2.9.0")
-// Gson converter (để tự parse JSON thành object Java)
     implementation("com.squareup.retrofit2:converter-gson:2.9.0")
-// OkHttp (thư viện nền cho Retrofit - giúp debug network)
     implementation("com.squareup.okhttp3:logging-interceptor:4.11.0")
 
     implementation ("com.github.bumptech.glide:glide:4.16.0")
     annotationProcessor ("com.github.bumptech.glide:compiler:4.16.0")
 
-    implementation("com.google.firebase:firebase-database:21.0.0")
-    implementation("com.google.firebase:firebase-auth:23.0.0")
     implementation("com.google.firebase:firebase-storage:21.0.1")
 
     implementation("com.github.PhilJay:MPAndroidChart:v3.1.0")
-
-    implementation ("com.google.firebase:firebase-appcheck-playintegrity")
 }

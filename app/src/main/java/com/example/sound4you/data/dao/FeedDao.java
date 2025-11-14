@@ -11,6 +11,6 @@ public interface FeedDao {
     @GET("api/feed/")
     Call<List<Track>> getFeed();
 
-    @GET("api/feed/following/{firebase_id}")
-    Call<List<Track>> getFeedFollowing(@Path("firebase_id") String firebaseUid);
+    @GET("api/feed/following/{userId}")
+    Call<List<Track>> getFeedFollowing(@Path("userId") int userId);
 }

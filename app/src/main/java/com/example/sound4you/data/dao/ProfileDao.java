@@ -9,12 +9,10 @@ import retrofit2.http.Body;
 import retrofit2.http.Path;
 
 public interface ProfileDao {
-    @GET("api/users/firebase/{firebaseUid}")
-    Call<User> getUserByFirebase(@Path("firebaseUid") String firebaseUid);
 
     @GET("api/users/{id}")
-    Call<User> getUserId(@Path("id") int id);
+    Call<User> getUserById(@Path("id") int id);
 
-    @PUT("api/users/firebase/{firebaseUid}")
-    Call<User> updateUser(@Path("firebaseUid") String firebaseUid, @Body User user);
+    @PUT("api/users/{id}")
+    Call<User> updateUser(@Path("id") int id, @Body User user);
 }

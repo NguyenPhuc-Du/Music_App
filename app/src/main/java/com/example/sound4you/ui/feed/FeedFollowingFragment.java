@@ -1,5 +1,7 @@
 package com.example.sound4you.ui.feed;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -14,39 +16,43 @@ import com.example.sound4you.R;
 import com.example.sound4you.data.model.Track;
 import com.example.sound4you.presenter.feed.FeedFollowingPresenter;
 import com.example.sound4you.presenter.feed.FeedFollowingPresenterImpl;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 
 import java.util.List;
 import java.util.ArrayList;
 
-public class FeedFollowingFragment extends Fragment implements FeedView{
+public class FeedFollowingFragment extends Fragment implements FeedView {
+
     private RecyclerView rvFeedFollowing;
     private FeedFollowingAdapter adapter;
     private List<Track> data = new ArrayList<>();
     private FeedFollowingPresenter presenter;
-    private String firebaseId;
 
-    public FeedFollowingFragment() {
-    }
+    public FeedFollowingFragment() {}
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
         View v = inflater.inflate(R.layout.fragment_feed_following, container, false);
 
         rvFeedFollowing = v.findViewById(R.id.rvFeedFollowing);
-
         rvFeedFollowing.setLayoutManager(new LinearLayoutManager(getContext()));
+
         adapter = new FeedFollowingAdapter(getContext(), data);
         rvFeedFollowing.setAdapter(adapter);
 
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        firebaseId = user != null ? user.getUid() : null;
+        SharedPreferences prefs =
+                requireContext().getSharedPreferences("AuthPreferences", Context.MODE_PRIVATE);
+
+        int userId = prefs.getInt("UserId", -1);
+
+        if (userId == -1) {
+            showError("Bạn chưa đăng nhập");
+            return v;
+        }
 
         presenter = new FeedFollowingPresenterImpl(this);
-
-        presenter.loadFollowingFeed(firebaseId);
+        presenter.loadFollowingFeed(userId);
 
         return v;
     }
@@ -64,11 +70,6 @@ public class FeedFollowingFragment extends Fragment implements FeedView{
         Toast.makeText(getContext(), message, Toast.LENGTH_SHORT).show();
     }
 
-    @Override
-    public void showLoading() {
-    }
-
-    @Override
-    public void hideLoading() {
-    }
+    @Override public void showLoading() {}
+    @Override public void hideLoading() {}
 }

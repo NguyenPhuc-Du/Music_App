@@ -6,7 +6,6 @@ import android.content.SharedPreferences;
 import com.example.sound4you.data.model.User;
 import com.example.sound4you.data.repository.AuthRepository;
 import com.example.sound4you.ui.auth.AuthView;
-import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.Map;
 
@@ -18,13 +17,10 @@ public class LoginPresenterImpl implements LoginPresenter {
     private final AuthView authView;
     private final AuthRepository authRepository;
     private final Context context;
-    private final FirebaseAuth firebaseAuth;
-
     public LoginPresenterImpl(AuthView authView, Context context) {
         this.authView = authView;
         this.authRepository = new AuthRepository(context);
         this.context = context;
-        this.firebaseAuth = FirebaseAuth.getInstance();
     }
 
     @Override
@@ -34,35 +30,37 @@ public class LoginPresenterImpl implements LoginPresenter {
         User user = new User(email, password);
         authRepository.login(user, new Callback<Map<String, Object>>() {
             @Override
-            public void onResponse(Call<Map<String, Object>> call, Response<Map<String, Object>> response) {
+            public void onResponse(Call<Map<String, Object>> call, Response<Map<String, Object>> res) {
                 authView.hideLoading();
 
-                if (response.isSuccessful() && response.body() != null) {
-                    Map<String, Object> data = response.body();
-                    String token = data.get("token").toString();
-                    Map<String, Object> userData = (Map<String, Object>) data.get("user");
-                    int role = ((Double) userData.get("role")).intValue();
-
-                    SharedPreferences prefs = context.getSharedPreferences("AuthPreferences", Context.MODE_PRIVATE);
-                    prefs.edit()
-                            .putString("Token", token)
-                            .putString("Email", email)
-                            .putString("Role", role == 1 ? "admin" : "user")
-                            .apply();
-
-                    authRepository.saveToken(token);
-                    authRepository.saveUserRole(role);
-
-                    authView.onSuccess(role == 1 ? "admin" : "user");
-                } else {
+                if (!res.isSuccessful() || res.body() == null) {
                     authView.onError("Sai email hoặc mật khẩu!");
+                    return;
                 }
+
+                Map<String, Object> data = res.body();
+
+                String token = (String) data.get("token");
+                Map<String, Object> userData = (Map<String, Object>) data.get("user");
+
+                int userId = ((Double) userData.get("id")).intValue();
+                int roleInt = ((Double) userData.get("role")).intValue();
+                String role = roleInt == 1 ? "admin" : "user";
+
+                SharedPreferences prefs = context.getSharedPreferences("AuthPreferences", Context.MODE_PRIVATE);
+                prefs.edit()
+                        .putString("Token", token)
+                        .putInt("UserId", userId)
+                        .putString("Role", role)
+                        .apply();
+
+                authView.onSuccess(role);
             }
 
             @Override
             public void onFailure(Call<Map<String, Object>> call, Throwable t) {
                 authView.hideLoading();
-                authView.onError("Lỗi mạng, vui lòng thử lại sau!");
+                authView.onError("Lỗi mạng, vui lòng thử lại");
             }
         });
     }

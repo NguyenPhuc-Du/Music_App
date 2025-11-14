@@ -19,8 +19,8 @@ public class FeedRepository {
         call.enqueue(callback);
     }
 
-    public void getFeedFollowing(String firebaseId,Callback<List<Track>> callback) {
-        Call<List<Track>> call = feedDao.getFeedFollowing(firebaseId);
+    public void getFeedFollowing(int userId,Callback<List<Track>> callback) {
+        Call<List<Track>> call = feedDao.getFeedFollowing(userId);
         call.enqueue(callback);
     }
 }

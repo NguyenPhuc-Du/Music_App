@@ -9,31 +9,28 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.example.sound4you.MainActivity;
 import com.example.sound4you.R;
 import com.example.sound4you.ui.admin.AdminActivity;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 
 public class AuthActivity extends AppCompatActivity {
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        FirebaseAuth auth = FirebaseAuth.getInstance();
-        FirebaseUser user = auth.getCurrentUser();
         SharedPreferences prefs = getSharedPreferences("AuthPreferences", MODE_PRIVATE);
 
+        int userId = prefs.getInt("UserId", -1);
         String role = prefs.getString("Role", null);
 
-        if (user != null) {
+        if (userId != -1) {
             if ("admin".equals(role)) {
                 startActivity(new Intent(this, AdminActivity.class));
             } else {
                 startActivity(new Intent(this, MainActivity.class));
             }
             finish();
+            return;
         }
-        else {
-            setContentView(R.layout.activity_auth);
-        }
+
+        setContentView(R.layout.activity_auth);
     }
 }
+

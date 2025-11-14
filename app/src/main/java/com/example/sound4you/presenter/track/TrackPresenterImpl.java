@@ -9,36 +9,14 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class TrackPresenterImpl implements TrackPresenter{
+public class TrackPresenterImpl implements TrackPresenter {
+
     private final TrackRepository trackRepository;
     private final TrackView view;
 
     public TrackPresenterImpl(TrackView view) {
         this.trackRepository = new TrackRepository();
         this.view = view;
-    }
-
-    @Override
-    public void loadTracksByFirebaseLimited(String firebaseUid, int limit) {
-        view.showLoading();
-        trackRepository.getTrackByFirebaseLimited(firebaseUid, limit, new Callback<List<Track>>() {
-            @Override
-            public void onResponse(Call<List<Track>> call, Response<List<Track>> response) {
-                view.hideLoading();
-                if (response.isSuccessful() && response.body() != null) {
-                    view.onTracksLoaded(response.body());
-                }
-                else {
-                    view.onError("Không thể tải tracks");
-                }
-            }
-
-            @Override
-            public void onFailure(Call<List<Track>> call, Throwable t) {
-                view.hideLoading();
-                view.onError("Lỗi mạng: " + t.getMessage());
-            }
-        });
     }
 
     @Override
@@ -50,8 +28,7 @@ public class TrackPresenterImpl implements TrackPresenter{
                 view.hideLoading();
                 if (response.isSuccessful() && response.body() != null) {
                     view.onTracksLoaded(response.body());
-                }
-                else {
+                } else {
                     view.onError("Không thể tải tracks");
                 }
             }
@@ -65,16 +42,15 @@ public class TrackPresenterImpl implements TrackPresenter{
     }
 
     @Override
-    public void loadLikedTracks(String firebaseUid) {
+    public void loadLikedTracks(int userId) {
         view.showLoading();
-        trackRepository.getLikedTrack(firebaseUid, new Callback<List<Track>>() {
+        trackRepository.getLikedTrack(userId, new Callback<List<Track>>() {
             @Override
             public void onResponse(Call<List<Track>> call, Response<List<Track>> response) {
                 view.hideLoading();
                 if (response.isSuccessful() && response.body() != null) {
                     view.onTracksLoaded(response.body());
-                }
-                else {
+                } else {
                     view.onError("Không thể tải liked tracks");
                 }
             }
@@ -94,8 +70,7 @@ public class TrackPresenterImpl implements TrackPresenter{
             public void onResponse(Call<Void> call, Response<Void> response) {
                 if (response.isSuccessful()) {
                     view.onError("Đã xóa bài hát");
-                }
-                else {
+                } else {
                     view.onError("Xóa thất bại");
                 }
             }

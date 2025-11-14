@@ -1,6 +1,7 @@
 package com.example.sound4you.ui.search;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.view.LayoutInflater;
@@ -19,7 +20,6 @@ import com.example.sound4you.presenter.follow.FollowPresenterImpl;
 import com.example.sound4you.ui.stream.FollowStreamView;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.imageview.ShapeableImageView;
-import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.List;
 
@@ -44,15 +44,17 @@ public class SearchAdapterUser extends RecyclerView.Adapter<SearchAdapterUser.Vi
 
     @NonNull
     @Override
-    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public SearchAdapterUser.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View v = LayoutInflater.from(context).inflate(R.layout.item_search_users, parent, false);
         return new ViewHolder(v);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull SearchAdapterUser.ViewHolder holder, int position) {
         User user = userList.get(position);
-        String firebaseUid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+
+        SharedPreferences prefs = context.getSharedPreferences("AuthPreferences", Context.MODE_PRIVATE);
+        int currentUserId = prefs.getInt("UserId", -1);
 
         holder.tvUsername.setText(user.getUsername());
 
@@ -81,17 +83,22 @@ public class SearchAdapterUser extends RecyclerView.Adapter<SearchAdapterUser.Vi
             }
         });
 
-        followPresenter.checkFollowed(firebaseUid, user.getId());
+        followPresenter.checkFollowed(currentUserId, user.getId());
 
         holder.btnFollow.setOnClickListener(v -> {
             boolean isFollowed = holder.btnFollow.getText().toString().equals("Following");
-            holder.btnFollow.animate().scaleX(0.9f).scaleY(0.9f).setDuration(120)
-                    .withEndAction(() -> holder.btnFollow.animate().scaleX(1f).scaleY(1f).setDuration(120).start())
-                    .start();
 
-            followPresenter.followUser(firebaseUid, user.getId(), !isFollowed);
+            holder.btnFollow.animate()
+                    .scaleX(0.9f).scaleY(0.9f)
+                    .setDuration(120)
+                    .withEndAction(() ->
+                            holder.btnFollow.animate().scaleX(1f).scaleY(1f).setDuration(120).start()
+                    ).start();
+
+            followPresenter.followUser(currentUserId, user.getId(), !isFollowed);
         });
 
+        // --- CLICK PROFILE ---
         holder.itemView.setOnClickListener(v -> {
             if (userClick != null) userClick.OnClick(user);
         });

@@ -1,5 +1,6 @@
 package com.example.sound4you;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -33,7 +34,6 @@ import com.example.sound4you.ui.profile.UploadTrackListFragment;
 import com.example.sound4you.ui.profile.LikedTrackListFragment;
 import com.example.sound4you.ui.upload.UploadFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.List;
 
@@ -161,7 +161,8 @@ public class MainActivity extends AppCompatActivity implements NowPlayingBar.OnN
         if (track == null) return;
         if (includeNowPlaying == null || nowPlayingBar == null) return;
 
-        String firebaseUid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        SharedPreferences prefs = getSharedPreferences("AuthPreferences", MODE_PRIVATE);
+        int userId = prefs.getInt("UserId", -1);
 
         LikePresenterImpl likePresenter = new LikePresenterImpl(new LikeStreamView() {
             @Override
@@ -197,8 +198,8 @@ public class MainActivity extends AppCompatActivity implements NowPlayingBar.OnN
             }
         });
 
-        likePresenter.checkLiked(firebaseUid, track.getId());
-        followPresenter.checkFollowed(firebaseUid, track.getUserId());
+        likePresenter.checkLiked(userId, track.getId());
+        followPresenter.checkFollowed(userId, track.getUserId());
 
         this.currentTrack = track;
         nowPlayingBar.updateTrackInfo(track);
@@ -274,7 +275,8 @@ public class MainActivity extends AppCompatActivity implements NowPlayingBar.OnN
         int color = isLiked ? Color.parseColor("#FF7A00") : Color.BLACK;
         if (btnLike != null) btnLike.setImageTintList(ColorStateList.valueOf(color));
 
-        String firebaseUid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        SharedPreferences prefs = getSharedPreferences("AuthPreferences", MODE_PRIVATE);
+        int userId = prefs.getInt("UserId", -1);
 
         LikePresenterImpl likePresenter = new LikePresenterImpl(new LikeStreamView() {
             @Override public void onLikeChanged(boolean liked) { isLiked = liked; }
@@ -288,9 +290,6 @@ public class MainActivity extends AppCompatActivity implements NowPlayingBar.OnN
                 Toast.makeText(MainActivity.this, msg, Toast.LENGTH_SHORT).show();
             }
         });
-
-        if (firebaseUid != null)
-            likePresenter.likeTrack(firebaseUid, currentTrack.getId(), !isLiked);
     }
 
     @Override
@@ -300,11 +299,10 @@ public class MainActivity extends AppCompatActivity implements NowPlayingBar.OnN
             return;
         }
 
-        String firebaseUid = null;
-        if (FirebaseAuth.getInstance().getCurrentUser() != null)
-            firebaseUid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        SharedPreferences prefs = getSharedPreferences("AuthPreferences", MODE_PRIVATE);
+        int userId = prefs.getInt("UserId", -1);
 
-        int userId = currentTrack.getUserId();
+        int userId_other = currentTrack.getUserId();
         FollowPresenterImpl followPresenter = new FollowPresenterImpl(new FollowStreamView() {
             @Override
             public void onFollowChanged(boolean following) {
@@ -324,8 +322,7 @@ public class MainActivity extends AppCompatActivity implements NowPlayingBar.OnN
             }
         });
 
-        if (firebaseUid != null)
-            followPresenter.followUser(firebaseUid, userId, isFollowing);
+        followPresenter.followUser(userId, userId_other, isFollowing);
     }
 
     private void startProgressBar() {

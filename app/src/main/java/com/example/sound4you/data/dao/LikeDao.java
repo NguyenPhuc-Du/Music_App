@@ -9,6 +9,7 @@ import com.example.sound4you.data.model.CheckLikesRequest;
 import com.example.sound4you.data.model.Track;
 
 public interface LikeDao {
+
     @POST("api/like/")
     Call<Map<String, Object>> likeTrack(@Body Map<String, Object> data);
 

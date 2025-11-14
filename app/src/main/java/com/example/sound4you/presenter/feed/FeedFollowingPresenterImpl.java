@@ -9,27 +9,27 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class FeedFollowingPresenterImpl implements FeedFollowingPresenter{
+public class FeedFollowingPresenterImpl implements FeedFollowingPresenter {
+
     private FeedView view;
     private FeedRepository feedRepository;
 
     public FeedFollowingPresenterImpl(FeedView view) {
         this.view = view;
-        feedRepository = new FeedRepository();
+        this.feedRepository = new FeedRepository();
     }
 
     @Override
-    public void loadFollowingFeed(String firebaseId) {
+    public void loadFollowingFeed(int userId) {
         view.showLoading();
 
-        feedRepository.getFeedFollowing(firebaseId, new Callback<List<Track>>() {
+        feedRepository.getFeedFollowing(userId, new Callback<List<Track>>() {
             @Override
             public void onResponse(Call<List<Track>> call, Response<List<Track>> response) {
                 view.hideLoading();
                 if (response.isSuccessful() && response.body() != null) {
                     view.showFeed(response.body());
-                }
-                else {
+                } else {
                     view.showError("Không tải được feed theo dõi");
                 }
             }

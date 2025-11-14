@@ -15,16 +15,12 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.sound4you.R;
 import com.example.sound4you.data.model.Track;
 import com.example.sound4you.utils.MediaPlayerManager;
-import com.example.sound4you.presenter.like.LikePresenterImpl;
-import com.google.firebase.auth.FirebaseAuth;
 
 public class StreamTrackFragment extends Fragment{
 
@@ -99,10 +95,9 @@ public class StreamTrackFragment extends Fragment{
 
                 float ignoreZone = dpToPx(150);
                 if (y > viewHeight - ignoreZone) {
-                    return false; // Cho phép click Like / Follow / Title
+                    return false;
                 }
 
-                // Toggle Play/Pause
                 playerManager.toggle();
                 ivPlayPause.animate()
                         .alpha(playerManager.isPlaying() ? 0f : 1f)

@@ -2,7 +2,6 @@ package com.example.sound4you.ui.follow;
 
 import android.content.Context;
 import android.content.res.ColorStateList;
-import android.util.Log;
 import android.view.*;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -19,11 +18,8 @@ import com.example.sound4you.ui.profile.ProfileFragment;
 import com.example.sound4you.ui.stream.FollowStreamView;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.imageview.ShapeableImageView;
-import com.google.firebase.auth.FirebaseAuth;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class FollowAdapter extends RecyclerView.Adapter<FollowAdapter.ViewHolder> {
 
@@ -45,7 +41,10 @@ public class FollowAdapter extends RecyclerView.Adapter<FollowAdapter.ViewHolder
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         User user = userList.get(position);
-        String firebaseUid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+
+        int currentUserId = context
+                .getSharedPreferences("AuthPreferences", Context.MODE_PRIVATE)
+                .getInt("UserId", -1);
 
         holder.tvName.setText(user.getUsername());
 
@@ -74,11 +73,11 @@ public class FollowAdapter extends RecyclerView.Adapter<FollowAdapter.ViewHolder
             }
         });
 
-        followPresenter.checkFollowed(firebaseUid, user.getId());
+        followPresenter.checkFollowed(currentUserId, user.getId());
 
         holder.btnFollow.setOnClickListener(v -> {
             boolean isCurrentlyFollowed = holder.btnFollow.getText().toString().equals("Followed");
-            followPresenter.followUser(firebaseUid, user.getId(), !isCurrentlyFollowed);
+            followPresenter.followUser(currentUserId, user.getId(), !isCurrentlyFollowed);
         });
 
         holder.ivAvatar.setOnClickListener(v -> {
@@ -115,7 +114,7 @@ public class FollowAdapter extends RecyclerView.Adapter<FollowAdapter.ViewHolder
 
     static class ViewHolder extends RecyclerView.ViewHolder {
         ShapeableImageView ivAvatar;
-        TextView tvName, tvFollowerCount;
+        TextView tvName;
         MaterialButton btnFollow;
 
         public ViewHolder(@NonNull View itemView) {
