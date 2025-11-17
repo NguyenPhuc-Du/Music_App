@@ -41,7 +41,7 @@ public class UploadPresenterImpl implements UploadPresenter {
         RequestBody userIdBody = RequestBody.create(MediaType.parse("text/plain"), String.valueOf(userId));
         RequestBody titleBody = RequestBody.create(MediaType.parse("text/plain"), title);
         RequestBody genreBody = RequestBody.create(MediaType.parse("text/plain"), genre);
-        RequestBody durationBody = RequestBody.create(MediaType.parse("text/plain"), duration); // ★ NEW
+        RequestBody durationBody = RequestBody.create(MediaType.parse("text/plain"), duration); //
 
         MultipartBody.Part musicPart = null;
         MultipartBody.Part coverPart = null;

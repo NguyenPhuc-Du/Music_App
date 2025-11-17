@@ -14,14 +14,15 @@ public class ProfilePresenterImpl implements ProfilePresenter {
 
     private final ProfileRepository repo;
     private final ProfileView view;
-    private final FollowPresenterImpl followPresenter;
+    private FollowPresenterImpl followPresenter = null;
 
-    public ProfilePresenterImpl(ProfileView view) {
+    public ProfilePresenterImpl(ProfileView view, int mark) {
         this.repo = new ProfileRepository();
         this.view = view;
 
-
-        this.followPresenter = new FollowPresenterImpl((FollowStreamView) view);
+        if (mark == 1) {
+            this.followPresenter = new FollowPresenterImpl((FollowStreamView) view);
+        }
     }
 
     @Override
@@ -37,8 +38,11 @@ public class ProfilePresenterImpl implements ProfilePresenter {
 
                     User user = response.body();
                     view.onProfileLoaded(user);
-                    followPresenter.countFollowers(userId);
-                    followPresenter.countFollowing(userId);
+
+                    if (followPresenter != null) {
+                        followPresenter.countFollowers(userId);
+                        followPresenter.countFollowing(userId);
+                    }
 
                 } else view.onError("Không lấy được profile");
             }

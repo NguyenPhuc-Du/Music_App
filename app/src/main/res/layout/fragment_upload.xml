@@ -103,8 +103,7 @@
             android:hint="Track title"
             android:layout_marginBottom="20dp"
             android:textColor="@color/white"
-            android:textSize="25sp"
-            android:text="Noi nay co anh"/>
+            android:textSize="25sp"/>
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/pickTrackGenreContainer"

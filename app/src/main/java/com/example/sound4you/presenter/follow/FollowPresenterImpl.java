@@ -18,13 +18,11 @@ public class FollowPresenterImpl implements FollowPresenter {
     private FollowView view;
     private final FollowRepository followRepository;
 
-    // Constructor dành cho PROFILE (FollowStreamView)
     public FollowPresenterImpl(FollowStreamView streamView) {
         this.streamView = streamView;
         this.followRepository = new FollowRepository();
     }
 
-    // Constructor dành cho FOLLOW LIST VIEW
     public FollowPresenterImpl(FollowView view) {
         this.view = view;
         this.followRepository = new FollowRepository();

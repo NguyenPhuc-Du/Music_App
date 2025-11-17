@@ -87,7 +87,7 @@ public class ProfileFragment extends Fragment
                 .getSharedPreferences("AuthPreferences", Context.MODE_PRIVATE)
                 .getInt("UserId", -1);
 
-        profilePresenter = new ProfilePresenterImpl(this);
+        profilePresenter = new ProfilePresenterImpl(this, 1);
         trackPresenter = new TrackPresenterImpl(this);
         followPresenter = new FollowPresenterImpl(this);
         likePresenter = new LikePresenterImpl(new LikeStreamView() {

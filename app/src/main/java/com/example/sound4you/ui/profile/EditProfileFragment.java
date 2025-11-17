@@ -72,7 +72,7 @@ public class EditProfileFragment extends Fragment implements ProfileView {
         edtUsername = v.findViewById(R.id.edtUsername);
         edtBio = v.findViewById(R.id.edtBio);
 
-        profilePresenter = new ProfilePresenterImpl(this);
+        profilePresenter = new ProfilePresenterImpl(this,0);
 
         profilePresenter.loadProfile(userId);
 
